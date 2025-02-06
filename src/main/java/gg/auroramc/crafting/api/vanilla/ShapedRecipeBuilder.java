@@ -6,8 +6,6 @@ import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -15,9 +13,8 @@ import java.util.function.Function;
 public class ShapedRecipeBuilder extends RecipeBuilder<ShapedRecipeBuilder, ShapedRecipe> {
     private CraftingBookCategory category = CraftingBookCategory.MISC;
     private String group = null;
-    private String[] shape = new String[3];
+    private String[] shape = new String[]{"012", "345", "678"};
     private Map<Character, ItemStack> ingredients;
-
 
     public ShapedRecipeBuilder(String id) {
         super(id);
@@ -38,34 +35,8 @@ public class ShapedRecipeBuilder extends RecipeBuilder<ShapedRecipeBuilder, Shap
     }
 
     public ShapedRecipeBuilder ingredients(List<ItemStack> ingredients) {
-        var airChar = 'N';
-        var chars = new char[]{'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'};
-        var charIndex = 0;
-        var map = new HashMap<ItemStack, Character>();
-
-        for (int i = 0; i < 9; i++) {
-            var ingredient = ingredients.get(i);
-            if (map.containsKey(ingredient)) continue;
-            if (ingredient.isEmpty()) {
-                map.put(ingredient, airChar);
-            } else {
-                map.put(ingredient, chars[charIndex]);
-                charIndex++;
-            }
-        }
-
-        var shapeString = new StringBuilder();
-        for (int i = 0; i < 9; i++) {
-            var ingredient = ingredients.get(i);
-            shapeString.append(map.get(ingredient));
-            if (i == 3 || i == 6) {
-                shapeString.append(";");
-            }
-        }
-        this.shape = Arrays.stream(shapeString.toString().split(";")).toArray(String[]::new);
-
-        for (var entry : map.entrySet()) {
-            this.ingredients.put(entry.getValue(), entry.getKey());
+        for (int i = 0; i < ingredients.size(); i++) {
+            this.ingredients.put(String.valueOf(i).toCharArray()[0], ingredients.get(i));
         }
 
         return this;

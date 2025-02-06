@@ -32,14 +32,7 @@ public class Workbench {
 
     public void addBlueprint(BlueprintType type, Blueprint blueprint) {
         blueprints.put(blueprint.getId(), blueprint);
-        if (blueprint instanceof ShapedBlueprint shapedBlueprint) {
-            for (var ingredientList : shapedBlueprint.getShapeIngredientVariants()) {
-                var key = BlueprintLookupGenerator.toShapedKey(ingredientList);
-                matrixLookup.computeIfAbsent(type, t -> new HashMap<>()).put(key, blueprint);
-            }
-        } else {
-            matrixLookup.computeIfAbsent(type, t -> new HashMap<>()).put(BlueprintLookupGenerator.toKey(blueprint), blueprint);
-        }
+        matrixLookup.computeIfAbsent(type, t -> new HashMap<>()).put(BlueprintLookupGenerator.toKey(blueprint), blueprint);
     }
 
     public Blueprint getBlueprint(String id) {
