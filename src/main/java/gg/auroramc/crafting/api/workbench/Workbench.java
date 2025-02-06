@@ -21,7 +21,7 @@ public class Workbench {
     @Getter
     protected final List<Integer> matrixSlots;
     @Getter
-    protected final boolean square;
+    protected boolean square;
 
     public Workbench(String id, int resultSlot, List<Integer> matrixSlots) {
         this.id = id;
