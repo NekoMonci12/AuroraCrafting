@@ -1,7 +1,8 @@
 package gg.auroramc.crafting.api.vanilla;
 
+import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
@@ -10,12 +11,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
-public class ShapedRecipeBuilder extends RecipeBuilder<ShapedRecipeBuilder> {
+public class ShapedRecipeBuilder extends RecipeBuilder<ShapedRecipeBuilder, ShapedRecipe> {
     private CraftingBookCategory category = CraftingBookCategory.MISC;
     private String group = null;
     private String[] shape = new String[3];
-    private Map<Character, RecipeChoice> ingredients;
+    private Map<Character, ItemStack> ingredients;
 
 
     public ShapedRecipeBuilder(String id) {
@@ -64,15 +66,18 @@ public class ShapedRecipeBuilder extends RecipeBuilder<ShapedRecipeBuilder> {
         this.shape = Arrays.stream(shapeString.toString().split(";")).toArray(String[]::new);
 
         for (var entry : map.entrySet()) {
-            var choice = entry.getKey().isEmpty() ? EmptyRecipeChoice.get() : new RecipeChoice.MaterialChoice(entry.getKey().getType());
-            this.ingredients.put(entry.getValue(), choice);
+            this.ingredients.put(entry.getValue(), entry.getKey());
         }
 
         return this;
     }
 
     @Override
-    public Recipe build() {
+    public ShapedRecipe build() {
+        return buildInternal(key, this::dynamicChoiceFor);
+    }
+
+    private ShapedRecipe buildInternal(NamespacedKey key, Function<ItemStack, RecipeChoice> choiceSelector) {
         var recipe = new ShapedRecipe(key, result);
 
         if (group != null) {
@@ -82,7 +87,7 @@ public class ShapedRecipeBuilder extends RecipeBuilder<ShapedRecipeBuilder> {
         recipe.shape(shape);
 
         for (var entry : ingredients.entrySet()) {
-            recipe.setIngredient(entry.getKey(), entry.getValue());
+            recipe.setIngredient(entry.getKey(), choiceSelector.apply(entry.getValue()));
         }
 
         return recipe;

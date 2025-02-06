@@ -1,24 +1,23 @@
 package gg.auroramc.crafting.api.vanilla;
 
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.function.Function;
 
-public class ShapelessRecipeBuilder extends RecipeBuilder<ShapelessRecipeBuilder> {
+public class ShapelessRecipeBuilder extends RecipeBuilder<ShapelessRecipeBuilder, ShapelessRecipe> {
     private CraftingBookCategory category = CraftingBookCategory.MISC;
     private String group = null;
-    private List<RecipeChoice> ingredients;
+    private List<ItemStack> ingredients;
 
     public ShapelessRecipeBuilder(String id) {
         super(id);
     }
 
-    public static ShapedRecipeBuilder shapelessRecipe(String id) {
-        return new ShapedRecipeBuilder(id);
+    public static ShapelessRecipeBuilder shapelessRecipe(String id) {
+        return new ShapelessRecipeBuilder(id);
     }
 
     public ShapelessRecipeBuilder category(CraftingBookCategory category) {
@@ -32,17 +31,16 @@ public class ShapelessRecipeBuilder extends RecipeBuilder<ShapelessRecipeBuilder
     }
 
     public ShapelessRecipeBuilder ingredients(List<ItemStack> ingredients) {
-        for(var ingredient : ingredients) {
-            if(!ingredient.isEmpty()) {
-                this.ingredients.add(new RecipeChoice.MaterialChoice(ingredient.getType()));
-            }
-        }
-
+        this.ingredients = List.copyOf(ingredients);
         return this;
     }
 
     @Override
-    public Recipe build() {
+    public ShapelessRecipe build() {
+        return buildInternal(key, this::dynamicChoiceFor);
+    }
+
+    private ShapelessRecipe buildInternal(NamespacedKey key, Function<ItemStack, RecipeChoice> choiceSelector) {
         var recipe = new ShapelessRecipe(key, result);
 
         if (group != null) {
@@ -50,8 +48,8 @@ public class ShapelessRecipeBuilder extends RecipeBuilder<ShapelessRecipeBuilder
         }
         recipe.setCategory(category);
 
-        for(var ingredient : ingredients) {
-            recipe.addIngredient(ingredient);
+        for (var ingredient : ingredients) {
+            recipe.addIngredient(choiceSelector.apply(ingredient));
         }
 
         return recipe;

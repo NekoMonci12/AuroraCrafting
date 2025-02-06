@@ -3,12 +3,28 @@ package gg.auroramc.crafting.api.blueprint;
 import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.item.TypeId;
 import gg.auroramc.crafting.api.ItemPair;
+import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.recipe.CraftingBookCategory;
 
+@Getter
 public class ShapedBlueprint extends Blueprint {
+    protected CraftingBookCategory vanillaCategory = CraftingBookCategory.MISC;
+    protected String vanillaGroup;
+
     public ShapedBlueprint(String id) {
         super(id);
+    }
+
+    public ShapedBlueprint vanillaCategory(CraftingBookCategory category) {
+        this.vanillaCategory = category;
+        return this;
+    }
+
+    public ShapedBlueprint vanillaGroup(String group) {
+        this.vanillaGroup = group;
+        return this;
     }
 
     @Override

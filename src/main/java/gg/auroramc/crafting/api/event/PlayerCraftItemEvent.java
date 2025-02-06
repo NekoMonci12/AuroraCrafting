@@ -1,5 +1,6 @@
 package gg.auroramc.crafting.api.event;
 
+import gg.auroramc.crafting.api.blueprint.Blueprint;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.bukkit.entity.Player;
@@ -26,4 +27,5 @@ public class PlayerCraftItemEvent extends Event {
     private final Player player;
     private final ItemStack item;
     private final int amount;
+    private final Blueprint blueprint;
 }

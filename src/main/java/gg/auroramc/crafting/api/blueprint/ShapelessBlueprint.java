@@ -1,18 +1,31 @@
 package gg.auroramc.crafting.api.blueprint;
 
 import gg.auroramc.aurora.api.AuroraAPI;
-import gg.auroramc.crafting.api.ItemPair;
+import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.recipe.CraftingBookCategory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 
+@Getter
 public class ShapelessBlueprint extends Blueprint {
+    protected CraftingBookCategory vanillaCategory = CraftingBookCategory.MISC;
+    protected String vanillaGroup;
 
     public ShapelessBlueprint(String id) {
         super(id);
+    }
+
+    public ShapelessBlueprint vanillaCategory(CraftingBookCategory category) {
+        this.vanillaCategory = category;
+        return this;
+    }
+
+    public ShapelessBlueprint vanillaGroup(String group) {
+        this.vanillaGroup = group;
+        return this;
     }
 
     @Override

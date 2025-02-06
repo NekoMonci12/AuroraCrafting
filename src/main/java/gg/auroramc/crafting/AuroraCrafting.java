@@ -111,6 +111,6 @@ public class AuroraCrafting extends JavaPlugin {
     }
 
     public void callCraftEvent(Player player, ItemStack item, int amount) {
-        Bukkit.getPluginManager().callEvent(new PlayerCraftItemEvent(player, item, amount));
+        Bukkit.getPluginManager().callEvent(new PlayerCraftItemEvent(player, item, amount, null));
     }
 }

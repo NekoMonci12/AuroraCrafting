@@ -4,8 +4,10 @@ import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.config.premade.ItemConfig;
 import gg.auroramc.aurora.api.item.TypeId;
 import gg.auroramc.aurora.api.util.ItemUtils;
+import gg.auroramc.aurora.api.util.TriConsumer;
 import gg.auroramc.crafting.AuroraCrafting;
 import gg.auroramc.crafting.api.ItemPair;
+import gg.auroramc.crafting.api.book.BookCategory;
 import gg.auroramc.crafting.api.workbench.Workbench;
 import lombok.*;
 import org.bukkit.Material;
@@ -16,16 +18,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 @Getter
 public abstract class Blueprint {
     protected final String id;
+    protected BookCategory category;
     protected ItemPair result;
     protected ItemStack resultItem;
     protected String permission;
     protected Workbench workbench;
     protected DisplayOptions displayOptions;
     protected Map<String, MergeOptions> mergeOptions;
+    protected final List<TriConsumer<Player, ItemStack, Integer>> craftActions = new ArrayList<>();
     protected final List<ItemPair> ingredients = new ArrayList<>();
     protected final List<ItemStack> ingredientItems = new ArrayList<>();
     protected final Map<TypeId, Integer> ingredientCount = new HashMap<>();
@@ -132,6 +137,17 @@ public abstract class Blueprint {
     }
 
     /**
+     * Set the book category which the blueprint belongs to
+     *
+     * @param category the category
+     * @return the blueprint
+     */
+    public Blueprint category(BookCategory category) {
+        this.category = category;
+        return this;
+    }
+
+    /**
      * Set the display options for the blueprint.
      * This defines how the blueprint will be displayed in the recipe book.
      *
@@ -174,6 +190,18 @@ public abstract class Blueprint {
         if (itemPair.id().equals(TypeId.from(Material.AIR))) {
             this.ingredientCount.remove(itemPair.id());
         }
+        return this;
+    }
+
+    /**
+     * Register a craft action for the blueprint. This will be called
+     * when the blueprint is crafted.
+     *
+     * @param handler the handler to call
+     * @return the blueprint
+     */
+    public Blueprint onCraft(TriConsumer<Player, ItemStack, Integer> handler) {
+        this.craftActions.add(handler);
         return this;
     }
 

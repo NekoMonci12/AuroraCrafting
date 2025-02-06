@@ -1,5 +1,6 @@
 package gg.auroramc.crafting.util;
 
+import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.item.TypeId;
 import gg.auroramc.crafting.api.vanilla.*;
 import gg.auroramc.crafting.config.CookingRecipesConfig;
@@ -25,7 +26,7 @@ public class RecipeAdapter {
         }
 
         if (config.getInput() != null) {
-            builder.input(TypeId.fromDefault(config.getInput()));
+            builder.input(AuroraAPI.getItemManager().resolveItem(TypeId.fromDefault(config.getInput())));
         }
         if (config.getCategory() != null) {
             builder.category(CookingBookCategory.valueOf(config.getCategory().toUpperCase(Locale.ROOT)));
@@ -40,25 +41,25 @@ public class RecipeAdapter {
             builder.cookingTime(config.getCookingTime());
         }
 
-        builder.result(TypeId.fromDefault(config.getResult()));
+        builder.result(AuroraAPI.getItemManager().resolveItem(TypeId.fromDefault(config.getResult())));
 
         return builder.build();
     }
 
     public static Recipe adapt(RecipeType type, SmithingTransformRecipesConfig.RecipeConfig config) {
-        var builder = SmithingTransformRecipeBuilder.smithingTransformRecipe(config.getId()).copyDataComponents(config.isCopyNbt());
+        var builder = SmithingRecipeBuilder.smithingRecipe(config.getId());
 
         if (config.getAddition() != null) {
-            builder.addition(TypeId.fromDefault(config.getAddition()));
+            builder.addition(AuroraAPI.getItemManager().resolveItem(TypeId.fromDefault(config.getAddition())));
         }
         if (config.getBase() != null) {
-            builder.base(TypeId.fromDefault(config.getBase()));
+            builder.base(AuroraAPI.getItemManager().resolveItem(TypeId.fromDefault(config.getBase())));
         }
         if (config.getTemplate() != null) {
-            builder.template(TypeId.fromDefault(config.getTemplate()));
+            builder.template(AuroraAPI.getItemManager().resolveItem(TypeId.fromDefault(config.getTemplate())));
         }
 
-        builder.result(TypeId.fromDefault(config.getResult()));
+        builder.result(AuroraAPI.getItemManager().resolveItem(TypeId.fromDefault(config.getResult())));
 
         return builder.build();
     }
