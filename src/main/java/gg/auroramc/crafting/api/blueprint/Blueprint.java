@@ -87,7 +87,7 @@ public abstract class Blueprint {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class DisplayOptions {
+    public static final class DisplayOptions {
         private List<String> lockedLore;
         private Map<String, ItemConfig> items;
     }
@@ -96,7 +96,7 @@ public abstract class Blueprint {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class MergeOptions {
+    public static final class MergeOptions {
         private boolean enchants;
         private Map<String, Boolean> pdc;
     }
@@ -108,9 +108,12 @@ public abstract class Blueprint {
      * @return the blueprint
      */
     public Blueprint result(ItemPair result) {
-        this.result = result;
         var itemStack = AuroraAPI.getItemManager().resolveItem(result.id());
         itemStack.setAmount(result.amount());
+        if (itemStack.isEmpty()) {
+            throw new IllegalArgumentException("Invalid item ID: " + result.id());
+        }
+        this.result = result;
         this.resultItem = itemStack;
         return this;
     }

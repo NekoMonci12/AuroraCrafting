@@ -1,5 +1,9 @@
 package gg.auroramc.crafting.api.workbench;
 
+import gg.auroramc.crafting.api.workbench.custom.CustomWorkbench;
+import gg.auroramc.crafting.api.workbench.vanilla.CraftingTable;
+import gg.auroramc.crafting.api.workbench.vanilla.Furnace;
+import gg.auroramc.crafting.api.workbench.vanilla.SmithingTable;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -19,6 +23,7 @@ public class WorkbenchRegistry {
 
     public void registerWorkbench(CustomWorkbench workbench) {
         if (frozen) throw new IllegalStateException("Cannot register workbench after freezing");
+        workbench.validate();
         workbenches.put(workbench.getId(), workbench);
     }
 

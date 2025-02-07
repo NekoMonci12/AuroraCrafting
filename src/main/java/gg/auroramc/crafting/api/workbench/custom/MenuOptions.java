@@ -1,0 +1,105 @@
+package gg.auroramc.crafting.api.workbench.custom;
+
+import gg.auroramc.aurora.api.config.premade.ItemConfig;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.SneakyThrows;
+
+@Getter
+@Builder
+public final class MenuOptions implements Cloneable {
+    @Setter
+    private static DefaultSupplier defaultSupplier;
+
+    public interface DefaultSupplier {
+        ItemConfig getFiller();
+
+        ItemConfig getEmptyQuickCraft();
+
+        ItemConfig getNoPermissionQuickCraft();
+
+        ItemConfig getBlueprintCompleted();
+
+        ItemConfig getBlueprintNotCompleted();
+
+        ItemConfig getInvalidResult();
+
+        Integer getRows();
+
+        String getTitle();
+    }
+
+    private ItemConfig fillerItem;
+    private ItemConfig emptyQuickCraftItem;
+    private ItemConfig noPermissionQuickCraftItem;
+    private ItemConfig blueprintCompletedItem;
+    private ItemConfig blueprintNotCompletedItem;
+    private ItemConfig invalidResultItem;
+    private Integer rows;
+    private String title;
+
+    public MenuOptions setDefaults() {
+        if (this.fillerItem == null) {
+            this.fillerItem = defaultSupplier.getFiller();
+        }
+        if (this.emptyQuickCraftItem == null) {
+            this.emptyQuickCraftItem = defaultSupplier.getEmptyQuickCraft();
+        }
+        if (this.noPermissionQuickCraftItem == null) {
+            this.noPermissionQuickCraftItem = defaultSupplier.getNoPermissionQuickCraft();
+        }
+        if (this.blueprintCompletedItem == null) {
+            this.blueprintCompletedItem = defaultSupplier.getBlueprintCompleted();
+        }
+        if (this.blueprintNotCompletedItem == null) {
+            this.blueprintNotCompletedItem = defaultSupplier.getBlueprintNotCompleted();
+        }
+        if (this.invalidResultItem == null) {
+            this.invalidResultItem = defaultSupplier.getInvalidResult();
+        }
+        if (this.rows == null) {
+            this.rows = defaultSupplier.getRows();
+        }
+        if (this.title == null) {
+            this.title = defaultSupplier.getTitle();
+        }
+        return this;
+    }
+
+
+
+    public MenuOptions validate() {
+        if (fillerItem == null) {
+            throw new IllegalArgumentException("Filler item cannot be null");
+        }
+        if (emptyQuickCraftItem == null) {
+            throw new IllegalArgumentException("Empty quick craft item cannot be null");
+        }
+        if (noPermissionQuickCraftItem == null) {
+            throw new IllegalArgumentException("No permission quick craft item cannot be null");
+        }
+        if (blueprintCompletedItem == null) {
+            throw new IllegalArgumentException("Blueprint completed item cannot be null");
+        }
+        if (blueprintNotCompletedItem == null) {
+            throw new IllegalArgumentException("Blueprint not completed item cannot be null");
+        }
+        if (invalidResultItem == null) {
+            throw new IllegalArgumentException("Invalid result item cannot be null");
+        }
+        if (rows == null || rows < 1 || rows > 6) {
+            throw new IllegalArgumentException("Rows must be between 1 and 6");
+        }
+        if (title == null || title.isEmpty()) {
+            throw new IllegalArgumentException("Title cannot be null or empty");
+        }
+        return this;
+    }
+
+    @SneakyThrows
+    @Override
+    public MenuOptions clone() {
+        return (MenuOptions) super.clone();
+    }
+}

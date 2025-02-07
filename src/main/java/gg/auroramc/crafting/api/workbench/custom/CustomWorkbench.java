@@ -1,7 +1,8 @@
-package gg.auroramc.crafting.api.workbench;
+package gg.auroramc.crafting.api.workbench.custom;
 
 import gg.auroramc.crafting.api.blueprint.Blueprint;
 import gg.auroramc.crafting.api.blueprint.BlueprintType;
+import gg.auroramc.crafting.api.workbench.Workbench;
 import gg.auroramc.crafting.util.InventoryUtils;
 import gg.auroramc.crafting.util.Square;
 import lombok.Getter;
@@ -16,11 +17,17 @@ import java.util.List;
 public class CustomWorkbench extends Workbench {
     private final boolean square;
     private final List<Integer> quickCraftSlots;
+    private MenuOptions menuOptions;
 
     public CustomWorkbench(String name, int type, List<Integer> slots, List<Integer> quickCraftSlots) {
+        this(name, type, slots, quickCraftSlots, MenuOptions.builder().build());
+    }
+
+    public CustomWorkbench(String name, int type, List<Integer> slots, List<Integer> quickCraftSlots, MenuOptions menuOptions) {
         super(name, type, slots);
         this.quickCraftSlots = quickCraftSlots == null ? List.of() : quickCraftSlots;
         this.square = Square.isSquareCraftingArea(slots);
+        this.menuOptions = menuOptions.clone().setDefaults();
     }
 
     public @NotNull List<Blueprint> getCraftableBlueprints(Player player, int maxCount, BlueprintType... types) {
@@ -38,5 +45,22 @@ public class CustomWorkbench extends Workbench {
         }
 
         return craftableBlueprints;
+    }
+
+    public void validate() {
+        if (matrixSlots.isEmpty()) {
+            throw new IllegalStateException("Matrix slots cannot be empty");
+        }
+        if (matrixSlots.contains(resultSlot)) {
+            throw new IllegalStateException("Matrix slots cannot contain the result slot");
+        }
+        if (quickCraftSlots.contains(resultSlot)) {
+            throw new IllegalStateException("Quick craft slots cannot contain the result slot");
+        }
+        this.menuOptions.validate();
+    }
+
+    public void setMenuOptions(MenuOptions menuOptions) {
+        this.menuOptions = menuOptions.clone().setDefaults().validate();
     }
 }

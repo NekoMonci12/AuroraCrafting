@@ -1,6 +1,5 @@
 package gg.auroramc.crafting.api.workbench;
 
-import com.google.common.base.Preconditions;
 import gg.auroramc.crafting.api.blueprint.Blueprint;
 import gg.auroramc.crafting.api.blueprint.BlueprintContext;
 import gg.auroramc.crafting.api.blueprint.BlueprintLookupGenerator;
@@ -26,10 +25,6 @@ public abstract class Workbench {
 
 
     public Workbench(String id, int resultSlot, List<Integer> matrixSlots) {
-        Preconditions.checkNotNull(matrixSlots, "Matrix slots cannot be null");
-        Preconditions.checkArgument(!matrixSlots.isEmpty(), "Matrix slots must include at least one slot");
-        Preconditions.checkArgument(!matrixSlots.contains(resultSlot), "Matrix slots cannot contain the result slot");
-
         this.id = id;
         this.resultSlot = resultSlot;
         this.matrixSlots = matrixSlots;

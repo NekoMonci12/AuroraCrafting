@@ -1,4 +1,6 @@
-package gg.auroramc.crafting.api.workbench;
+package gg.auroramc.crafting.api.workbench.vanilla;
+
+import gg.auroramc.crafting.api.workbench.Workbench;
 
 import java.util.List;
 
