@@ -1,39 +1,38 @@
 package gg.auroramc.crafting.api.workbench;
 
+import com.google.common.base.Preconditions;
 import gg.auroramc.crafting.api.blueprint.Blueprint;
 import gg.auroramc.crafting.api.blueprint.BlueprintContext;
 import gg.auroramc.crafting.api.blueprint.BlueprintLookupGenerator;
 import gg.auroramc.crafting.api.blueprint.BlueprintType;
-import gg.auroramc.crafting.util.InventoryUtils;
-import gg.auroramc.crafting.util.Square;
 import lombok.Getter;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class Workbench {
+public abstract class Workbench {
     @Getter
     protected String id;
     @Getter
     private boolean frozen = false;
 
-    private final Map<String, Blueprint> blueprints = new HashMap<>();
-    private final Map<BlueprintType, Map<String, Blueprint>> categorizedBlueprints = new HashMap<>();
-    private final Map<BlueprintType, Map<String, Blueprint>> matrixLookup = new HashMap<>();
+    protected final Map<String, Blueprint> blueprints = new HashMap<>();
+    protected final Map<BlueprintType, Map<String, Blueprint>> categorizedBlueprints = new HashMap<>();
+    protected final Map<BlueprintType, Map<String, Blueprint>> matrixLookup = new HashMap<>();
     @Getter
     protected final int resultSlot;
     @Getter
     protected final List<Integer> matrixSlots;
-    @Getter
-    protected boolean square;
+
 
     public Workbench(String id, int resultSlot, List<Integer> matrixSlots) {
+        Preconditions.checkNotNull(matrixSlots, "Matrix slots cannot be null");
+        Preconditions.checkArgument(!matrixSlots.isEmpty(), "Matrix slots must include at least one slot");
+        Preconditions.checkArgument(!matrixSlots.contains(resultSlot), "Matrix slots cannot contain the result slot");
+
         this.id = id;
         this.resultSlot = resultSlot;
         this.matrixSlots = matrixSlots;
-        this.square = Square.isSquareCraftingArea(matrixSlots);
     }
 
     public void addBlueprint(BlueprintType type, Blueprint blueprint) {
@@ -62,23 +61,6 @@ public class Workbench {
             var shapedKey = BlueprintLookupGenerator.toShapedKey(context.getIdMatrix());
             return lookup.get(shapedKey);
         }
-    }
-
-    public @NotNull List<Blueprint> getCraftableBlueprints(Player player, int maxCount, BlueprintType... types) {
-        var craftableBlueprints = new ArrayList<Blueprint>();
-
-        var itemCount = InventoryUtils.buildItemCounts(player);
-
-        for (var type : types) {
-            for (var blueprint : categorizedBlueprints.computeIfAbsent(type, (k) -> new HashMap<>()).values()) {
-                if (blueprint.hasAccess(player) && blueprint.getQuickCraftTimes(itemCount) > 0) {
-                    craftableBlueprints.add(blueprint);
-                    if (craftableBlueprints.size() >= maxCount) break;
-                }
-            }
-        }
-
-        return craftableBlueprints;
     }
 
     public void freeze() {

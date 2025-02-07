@@ -13,7 +13,7 @@ import java.util.function.Function;
 public class ShapedRecipeBuilder extends RecipeBuilder<ShapedRecipeBuilder, ShapedRecipe> {
     private CraftingBookCategory category = CraftingBookCategory.MISC;
     private String group = null;
-    private String[] shape = new String[]{"012", "345", "678"};
+    private final String[] shape = new String[]{"012", "345", "678"};
     private Map<Character, ItemStack> ingredients;
 
     public ShapedRecipeBuilder(String id) {

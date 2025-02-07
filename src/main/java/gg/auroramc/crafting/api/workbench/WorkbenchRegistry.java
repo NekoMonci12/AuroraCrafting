@@ -15,9 +15,9 @@ public class WorkbenchRegistry {
     private final Furnace furnace = new Furnace();
 
     @Getter(AccessLevel.NONE)
-    private final Map<String, Workbench> workbenches = new HashMap<>();
+    private final Map<String, CustomWorkbench> workbenches = new HashMap<>();
 
-    public void registerWorkbench(Workbench workbench) {
+    public void registerWorkbench(CustomWorkbench workbench) {
         if (frozen) throw new IllegalStateException("Cannot register workbench after freezing");
         workbenches.put(workbench.getId(), workbench);
     }
@@ -26,7 +26,7 @@ public class WorkbenchRegistry {
         return workbenches.get(id);
     }
 
-    public Collection<Workbench> getCustomWorkbenches() {
+    public Collection<CustomWorkbench> getCustomWorkbenches() {
         return workbenches.values();
     }
 
