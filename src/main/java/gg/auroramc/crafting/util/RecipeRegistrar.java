@@ -3,7 +3,7 @@ package gg.auroramc.crafting.util;
 import com.google.common.collect.Maps;
 import gg.auroramc.crafting.config.ConfigManager;
 import gg.auroramc.crafting.config.CookingRecipesConfig;
-import gg.auroramc.crafting.config.SmithingTransformRecipesConfig;
+import gg.auroramc.crafting.config.SmithingRecipesConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -39,7 +39,7 @@ public class RecipeRegistrar {
         registeredRecipes.put(recipeType, newSet);
     }
 
-    public static void handleSmithingDiff(RecipeType recipeType, List<SmithingTransformRecipesConfig.RecipeConfig> recipes) {
+    public static void handleSmithingDiff(RecipeType recipeType, List<SmithingRecipesConfig.RecipeConfig> recipes) {
         var oldSet = registeredRecipes.get(recipeType);
         if (oldSet != null) {
             for (var oldRecipe : oldSet) {

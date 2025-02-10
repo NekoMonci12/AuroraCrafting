@@ -4,7 +4,7 @@ import gg.auroramc.aurora.api.AuroraAPI;
 import gg.auroramc.aurora.api.item.TypeId;
 import gg.auroramc.crafting.api.vanilla.*;
 import gg.auroramc.crafting.config.CookingRecipesConfig;
-import gg.auroramc.crafting.config.SmithingTransformRecipesConfig;
+import gg.auroramc.crafting.config.SmithingRecipesConfig;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.recipe.CookingBookCategory;
 
@@ -46,7 +46,7 @@ public class RecipeAdapter {
         return builder.build();
     }
 
-    public static Recipe adapt(RecipeType type, SmithingTransformRecipesConfig.RecipeConfig config) {
+    public static Recipe adapt(RecipeType type, SmithingRecipesConfig.RecipeConfig config) {
         var builder = SmithingRecipeBuilder.smithingRecipe(config.getId());
 
         if (config.getAddition() != null) {

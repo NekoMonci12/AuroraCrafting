@@ -2,16 +2,66 @@ package gg.auroramc.crafting.api.blueprint;
 
 import gg.auroramc.crafting.api.ItemPair;
 import gg.auroramc.crafting.api.workbench.Workbench;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.recipe.CookingBookCategory;
 
 @Getter
 public class CookingBlueprint extends Blueprint {
-    private VanillaOptions vanillaOptions = new VanillaOptions(CookingBookCategory.MISC, null, 200, 0);
+    private VanillaOptions vanillaOptions = VanillaOptions.builder().build();
     private Type type = Type.FURNACE;
 
-    public record VanillaOptions(CookingBookCategory category, String group, int cookingTime, float experience) {
+    @Getter
+    @AllArgsConstructor
+    public static final class VanillaOptions {
+        private CookingBookCategory category;
+        private String group;
+        private int cookingTime;
+        private float experience;
+
+        public static VanillaOptionsBuilder builder() {
+            return new VanillaOptionsBuilder();
+        }
+
+        public static final class VanillaOptionsBuilder {
+            private CookingBookCategory category = CookingBookCategory.MISC;
+            private String group = null;
+            private int cookingTime = 200;
+            private float experience = 0;
+
+            public VanillaOptionsBuilder category(CookingBookCategory category) {
+                if (category != null) {
+                    this.category = category;
+                }
+                return this;
+            }
+
+            public VanillaOptionsBuilder group(String group) {
+                if (group != null) {
+                    this.group = group;
+                }
+                return this;
+            }
+
+            public VanillaOptionsBuilder cookingTime(int cookingTime) {
+                if (cookingTime > 0) {
+                    this.cookingTime = cookingTime;
+                }
+                return this;
+            }
+
+            public VanillaOptionsBuilder experience(float experience) {
+                if (experience >= 0) {
+                    this.experience = experience;
+                }
+                return this;
+            }
+
+            public VanillaOptions build() {
+                return new VanillaOptions(category, group, cookingTime, experience);
+            }
+        }
     }
 
     public enum Type {

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-public class SmithingTransformRecipesConfig extends AuroraConfig {
+public class SmithingRecipesConfig extends AuroraConfig {
     @IgnoreField
     private String fileName;
 
@@ -31,7 +31,7 @@ public class SmithingTransformRecipesConfig extends AuroraConfig {
         private String sourceFile;
     }
 
-    public SmithingTransformRecipesConfig(File file) {
+    public SmithingRecipesConfig(File file) {
         super(file);
         this.fileName = file.getName().replace(".yml", "");
     }

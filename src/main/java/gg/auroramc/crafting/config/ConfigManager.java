@@ -39,7 +39,7 @@ public class ConfigManager {
     private List<CookingRecipesConfig.RecipeConfig> furnaceRecipes;
     private List<CookingRecipesConfig.RecipeConfig> campfireRecipes;
 
-    private List<SmithingTransformRecipesConfig.RecipeConfig> smithingTransformRecipes;
+    private List<SmithingRecipesConfig.RecipeConfig> smithingTransformRecipes;
 
     public ConfigManager(AuroraCrafting plugin) {
         this.plugin = plugin;
@@ -206,7 +206,7 @@ public class ConfigManager {
     }
 
     @SneakyThrows
-    private List<SmithingTransformRecipesConfig> getSmithingTransformRecipesConfigs() {
+    private List<SmithingRecipesConfig> getSmithingTransformRecipesConfigs() {
         Path recipesFolder = Path.of(plugin.getDataFolder().getPath(), "smithing_recipes");
 
         if (Files.notExists(recipesFolder)) {
@@ -220,7 +220,7 @@ public class ConfigManager {
                     .filter(path -> path.toString().endsWith(".yml") || path.toString().endsWith(".yaml"))
                     .map(Path::toFile)
                     .map((file) -> {
-                        SmithingTransformRecipesConfig recipesConfig = new SmithingTransformRecipesConfig(file);
+                        SmithingRecipesConfig recipesConfig = new SmithingRecipesConfig(file);
                         recipesConfig.load();
                         return recipesConfig;
                     })

@@ -42,8 +42,8 @@ public class BlueprintAdapter {
             case CAMPFIRE -> CampfireRecipeBuilder.campfireRecipe(blueprint.getId());
         };
 
-        return builder.cookingTime(blueprint.getVanillaOptions().cookingTime())
-                .experience(blueprint.getVanillaOptions().experience())
+        return builder.cookingTime(blueprint.getVanillaOptions().getCookingTime())
+                .experience(blueprint.getVanillaOptions().getExperience())
                 .input(blueprint.input())
                 .result(blueprint.getResultItem())
                 .build();
