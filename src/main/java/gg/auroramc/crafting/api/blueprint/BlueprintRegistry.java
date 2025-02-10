@@ -31,9 +31,9 @@ public class BlueprintRegistry {
         Map<String, Blueprint> collectedBlueprints = new HashMap<>();
         Map<TypeId, List<Blueprint>> resultLookupBlueprints = new HashMap<>();
 
-        addWorkbenchBlueprints(collectedBlueprints, resultLookupBlueprints, workbenchRegistry.getCraftingTable());
-        addWorkbenchBlueprints(collectedBlueprints, resultLookupBlueprints, workbenchRegistry.getSmithingTable());
-        addWorkbenchBlueprints(collectedBlueprints, resultLookupBlueprints, workbenchRegistry.getFurnace());
+        for (Workbench workbench : workbenchRegistry.getVanillaWorkbenches()) {
+            addWorkbenchBlueprints(collectedBlueprints, resultLookupBlueprints, workbench);
+        }
 
         for (Workbench workbench : workbenchRegistry.getCustomWorkbenches()) {
             addWorkbenchBlueprints(collectedBlueprints, resultLookupBlueprints, workbench);

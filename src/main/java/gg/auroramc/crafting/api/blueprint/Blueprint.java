@@ -83,24 +83,6 @@ public abstract class Blueprint {
         return result;
     }
 
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static final class DisplayOptions {
-        private List<String> lockedLore;
-        private Map<String, ItemConfig> items;
-    }
-
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static final class MergeOptions {
-        private boolean enchants;
-        private Map<String, Boolean> pdc;
-    }
-
     /**
      * Set the result of the blueprint
      *
@@ -329,4 +311,23 @@ public abstract class Blueprint {
      * @return the remaining ingredient matrix
      */
     public abstract ItemStack[] calcRemainingIngredientMatrix(BlueprintContext context, int timesCrafted);
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static final class DisplayOptions {
+        private List<String> lockedLore;
+        private Map<String, ItemConfig> items;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static final class MergeOptions {
+        private boolean enchants;
+    }
 }

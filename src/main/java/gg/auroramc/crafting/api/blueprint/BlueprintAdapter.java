@@ -8,18 +8,18 @@ import org.bukkit.inventory.SmithingTransformRecipe;
 
 public class BlueprintAdapter {
     public static ShapelessRecipe adapt(ShapelessBlueprint blueprint) {
-        return ShapelessRecipeBuilder.shapelessRecipe(blueprint.getId())
-                .category(blueprint.getVanillaOptions().category())
-                .group(blueprint.getVanillaOptions().group())
+        return ShapelessRecipeBuilder.shapelessRecipe(blueprint.getId(), blueprint.getVanillaOptions().getChoiceType())
+                .category(blueprint.getVanillaOptions().getCategory())
+                .group(blueprint.getVanillaOptions().getGroup())
                 .ingredients(blueprint.getIngredientItems())
                 .result(blueprint.getResultItem())
                 .build();
     }
 
     public static ShapedRecipe adapt(ShapedBlueprint blueprint) {
-        return ShapedRecipeBuilder.shapedRecipe(blueprint.getId())
-                .category(blueprint.getVanillaOptions().category())
-                .group(blueprint.getVanillaOptions().group())
+        return ShapedRecipeBuilder.shapedRecipe(blueprint.getId(), blueprint.getVanillaOptions().getChoiceType())
+                .category(blueprint.getVanillaOptions().getCategory())
+                .group(blueprint.getVanillaOptions().getGroup())
                 .ingredients(blueprint.getIngredientItems())
                 .result(blueprint.getResultItem())
                 .build();

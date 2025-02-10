@@ -1,14 +1,63 @@
 package gg.auroramc.crafting.api.blueprint;
 
 import gg.auroramc.crafting.api.workbench.Workbench;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
 
 @Getter
 public abstract class CraftingBlueprint<T extends CraftingBlueprint<T>> extends Blueprint {
-    private VanillaOptions vanillaOptions = new VanillaOptions(CraftingBookCategory.MISC, null);
+    private VanillaOptions vanillaOptions = VanillaOptions.builder().build();
 
-    public record VanillaOptions(CraftingBookCategory category, String group) {
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    public static final class VanillaOptions {
+        private CraftingBookCategory category;
+        private ChoiceType choiceType;
+        private String group;
+
+        public static VanillaOptionsBuilder builder() {
+            return new VanillaOptionsBuilder();
+        }
+
+        public static class VanillaOptionsBuilder {
+            private CraftingBookCategory category = CraftingBookCategory.MISC;
+            private ChoiceType choiceType = ChoiceType.ITEM_TYPE;
+            private String group = null;
+
+            public VanillaOptionsBuilder category(CraftingBookCategory category) {
+                if (category != null) {
+                    this.category = category;
+                }
+                return this;
+            }
+
+            public VanillaOptionsBuilder choiceType(ChoiceType choiceType) {
+                if (choiceType != null) {
+                    this.choiceType = choiceType;
+                }
+                return this;
+            }
+
+            public VanillaOptionsBuilder group(String group) {
+                if (group != null) {
+                    this.group = group;
+                }
+                return this;
+            }
+
+            public VanillaOptions build() {
+                return new VanillaOptions(category, choiceType, group);
+            }
+        }
+    }
+
+    public enum ChoiceType {
+        ITEM_TYPE,
+        EXACT,
+        PREDICATE
     }
 
     @SuppressWarnings("unchecked")

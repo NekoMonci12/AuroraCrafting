@@ -1,5 +1,6 @@
 package gg.auroramc.crafting.api.vanilla;
 
+import gg.auroramc.crafting.api.blueprint.CraftingBlueprint;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
@@ -7,27 +8,15 @@ import org.bukkit.inventory.recipe.CraftingBookCategory;
 import java.util.List;
 import java.util.function.Function;
 
-public class ShapelessRecipeBuilder extends RecipeBuilder<ShapelessRecipeBuilder, ShapelessRecipe> {
-    private CraftingBookCategory category = CraftingBookCategory.MISC;
-    private String group = null;
+public class ShapelessRecipeBuilder extends CraftingRecipeBuilder<ShapelessRecipe, ShapelessRecipeBuilder> {
     private List<ItemStack> ingredients;
 
-    public ShapelessRecipeBuilder(String id) {
-        super(id);
+    public ShapelessRecipeBuilder(String id, CraftingBlueprint.ChoiceType choiceType) {
+        super(id, choiceType);
     }
 
-    public static ShapelessRecipeBuilder shapelessRecipe(String id) {
-        return new ShapelessRecipeBuilder(id);
-    }
-
-    public ShapelessRecipeBuilder category(CraftingBookCategory category) {
-        this.category = category;
-        return this;
-    }
-
-    public ShapelessRecipeBuilder group(String group) {
-        this.group = group;
-        return this;
+    public static ShapelessRecipeBuilder shapelessRecipe(String id, CraftingBlueprint.ChoiceType choiceType) {
+        return new ShapelessRecipeBuilder(id, choiceType);
     }
 
     public ShapelessRecipeBuilder ingredients(List<ItemStack> ingredients) {
@@ -37,10 +26,6 @@ public class ShapelessRecipeBuilder extends RecipeBuilder<ShapelessRecipeBuilder
 
     @Override
     public ShapelessRecipe build() {
-        return buildInternal(key, this::dynamicChoiceFor);
-    }
-
-    private ShapelessRecipe buildInternal(NamespacedKey key, Function<ItemStack, RecipeChoice> choiceSelector) {
         var recipe = new ShapelessRecipe(key, result);
 
         if (group != null) {

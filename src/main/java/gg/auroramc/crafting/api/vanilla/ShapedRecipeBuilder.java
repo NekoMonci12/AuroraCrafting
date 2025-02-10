@@ -1,27 +1,26 @@
 package gg.auroramc.crafting.api.vanilla;
 
-import org.bukkit.NamespacedKey;
+import gg.auroramc.crafting.api.blueprint.CraftingBlueprint;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
-public class ShapedRecipeBuilder extends RecipeBuilder<ShapedRecipeBuilder, ShapedRecipe> {
+public class ShapedRecipeBuilder extends CraftingRecipeBuilder<ShapedRecipe, ShapedRecipeBuilder> {
     private CraftingBookCategory category = CraftingBookCategory.MISC;
     private String group = null;
     private final String[] shape = new String[]{"012", "345", "678"};
-    private Map<Character, ItemStack> ingredients;
+    private final Map<Character, ItemStack> ingredients = new HashMap<>();
 
-    public ShapedRecipeBuilder(String id) {
-        super(id);
+    public ShapedRecipeBuilder(String id, CraftingBlueprint.ChoiceType choiceType) {
+        super(id, choiceType);
     }
 
-    public static ShapedRecipeBuilder shapedRecipe(String id) {
-        return new ShapedRecipeBuilder(id);
+    public static ShapedRecipeBuilder shapedRecipe(String id, CraftingBlueprint.ChoiceType choiceType) {
+        return new ShapedRecipeBuilder(id, choiceType);
     }
 
     public ShapedRecipeBuilder category(CraftingBookCategory category) {
@@ -44,10 +43,6 @@ public class ShapedRecipeBuilder extends RecipeBuilder<ShapedRecipeBuilder, Shap
 
     @Override
     public ShapedRecipe build() {
-        return buildInternal(key, this::dynamicChoiceFor);
-    }
-
-    private ShapedRecipe buildInternal(NamespacedKey key, Function<ItemStack, RecipeChoice> choiceSelector) {
         var recipe = new ShapedRecipe(key, result);
 
         if (group != null) {
