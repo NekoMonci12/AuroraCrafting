@@ -32,7 +32,7 @@ public class ConfigManager {
     private RecipeBookCategoryConfig recipeBookCategoryConfig;
     private MerchantsMenuConfig merchantsMenuConfig;
 
-    private Map<String, RecipesConfig> recipes;
+    private Map<String, CraftingRecipesConfig> recipes;
 
     private List<CookingRecipesConfig.RecipeConfig> blastingRecipes;
     private List<CookingRecipesConfig.RecipeConfig> smokingRecipes;
@@ -46,10 +46,6 @@ public class ConfigManager {
     }
 
     public void reload() {
-        if (!new File(plugin.getDataFolder(), "config.yml").exists()) {
-            plugin.saveResource("recipes/example.yml", false);
-        }
-
         Config.saveDefault(plugin);
         config = new Config(plugin);
         config.load();
@@ -90,23 +86,23 @@ public class ConfigManager {
 
         recipes = getRecipesConfigs();
 
-        blastingRecipes = getCookingRecipesConfigs("blasting_recipes").stream()
+        blastingRecipes = getCookingRecipesConfigs("blueprints/vanilla/blast_furnace").stream()
                 .flatMap(recipesConfig -> recipesConfig.getRecipes().stream())
                 .collect(Collectors.toList());
 
-        smokingRecipes = getCookingRecipesConfigs("smoking_recipes").stream()
+        smokingRecipes = getCookingRecipesConfigs("blueprints/vanilla/smoker").stream()
                 .flatMap(recipesConfig -> recipesConfig.getRecipes().stream())
                 .collect(Collectors.toList());
 
-        furnaceRecipes = getCookingRecipesConfigs("furnace_recipes").stream()
+        furnaceRecipes = getCookingRecipesConfigs("blueprints/vanilla/furnace").stream()
                 .flatMap(recipesConfig -> recipesConfig.getRecipes().stream())
                 .collect(Collectors.toList());
 
-        campfireRecipes = getCookingRecipesConfigs("campfire_recipes").stream()
+        campfireRecipes = getCookingRecipesConfigs("blueprints/vanilla/campfire").stream()
                 .flatMap(recipesConfig -> recipesConfig.getRecipes().stream())
                 .collect(Collectors.toList());
 
-        smithingTransformRecipes = getSmithingTransformRecipesConfigs().stream()
+        smithingTransformRecipes = getSmithingRecipesConfigs().stream()
                 .flatMap(recipesConfig -> recipesConfig.getRecipes().stream())
                 .collect(Collectors.toList());
     }
@@ -144,20 +140,21 @@ public class ConfigManager {
         }
     }
 
-    private Map<String, RecipesConfig> getRecipesConfigs() {
-        Path recipesFolder = Path.of(plugin.getDataFolder().getPath(), "recipes");
+    private Map<String, CraftingRecipesConfig> getRecipesConfigs() {
+        Path recipesFolder = Path.of(plugin.getDataFolder().getPath(), "blueprints/aurora");
 
         if (Files.notExists(recipesFolder)) {
             try {
                 Files.createDirectories(recipesFolder); // Create folder if it doesn't exist
+                plugin.saveResource("blueprints/aurora/_example.yml", false);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
-        var recipes = new HashMap<String, RecipesConfig>();
+        var recipes = new HashMap<String, CraftingRecipesConfig>();
 
-        try (Stream<Path> paths = Files.walk(recipesFolder, 5)) {
+        try (Stream<Path> paths = Files.walk(recipesFolder, 10)) {
             var fileList = paths
                     .filter(Files::isRegularFile)
                     .filter(path -> path.toString().endsWith(".yml") || path.toString().endsWith(".yaml"))
@@ -166,7 +163,7 @@ public class ConfigManager {
 
             for (var file : fileList) {
                 try {
-                    RecipesConfig recipesConfig = new RecipesConfig(file);
+                    CraftingRecipesConfig recipesConfig = new CraftingRecipesConfig(file);
                     recipesConfig.load();
                     recipes.put(file.getName().replace(".yml", ""), recipesConfig);
                 } catch (Exception e) {
@@ -188,10 +185,10 @@ public class ConfigManager {
 
         if (Files.notExists(recipesFolder)) {
             Files.createDirectories(recipesFolder); // Create folder if it doesn't exist
-            plugin.saveResource(folder + "/example.yml", false);
+            plugin.saveResource(folder + "/_example.yml", false);
         }
 
-        try (Stream<Path> paths = Files.walk(recipesFolder, 5)) {
+        try (Stream<Path> paths = Files.walk(recipesFolder, 10)) {
             return paths
                     .filter(Files::isRegularFile)
                     .filter(path -> path.toString().endsWith(".yml") || path.toString().endsWith(".yaml"))
@@ -206,15 +203,15 @@ public class ConfigManager {
     }
 
     @SneakyThrows
-    private List<SmithingRecipesConfig> getSmithingTransformRecipesConfigs() {
-        Path recipesFolder = Path.of(plugin.getDataFolder().getPath(), "smithing_recipes");
+    private List<SmithingRecipesConfig> getSmithingRecipesConfigs() {
+        Path recipesFolder = Path.of(plugin.getDataFolder().getPath(), "blueprints/vanilla/smithing_table");
 
         if (Files.notExists(recipesFolder)) {
             Files.createDirectories(recipesFolder); // Create folder if it doesn't exist
-            plugin.saveResource("smithing_recipes/example.yml", false);
+            plugin.saveResource("blueprints/vanilla/smithing_table/_example.yml", false);
         }
 
-        try (Stream<Path> paths = Files.walk(recipesFolder, 5)) {
+        try (Stream<Path> paths = Files.walk(recipesFolder, 10)) {
             return paths
                     .filter(Files::isRegularFile)
                     .filter(path -> path.toString().endsWith(".yml") || path.toString().endsWith(".yaml"))

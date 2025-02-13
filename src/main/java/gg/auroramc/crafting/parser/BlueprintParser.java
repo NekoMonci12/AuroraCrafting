@@ -9,7 +9,7 @@ import gg.auroramc.crafting.api.blueprint.CookingBlueprint;
 import gg.auroramc.crafting.api.blueprint.SmithingBlueprint;
 import gg.auroramc.crafting.api.workbench.Workbench;
 import gg.auroramc.crafting.config.CookingRecipesConfig;
-import gg.auroramc.crafting.config.RecipesConfig;
+import gg.auroramc.crafting.config.CraftingRecipesConfig;
 import gg.auroramc.crafting.config.SmithingRecipesConfig;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Material;
@@ -25,7 +25,7 @@ public class BlueprintParser {
         return new BlueprintParser(workbench, filePath, recipeId);
     }
 
-    public Blueprint parse(RecipesConfig.RecipeConfig config) {
+    public Blueprint parse(CraftingRecipesConfig.RecipeConfig config) {
         return null;
     }
 
@@ -43,9 +43,6 @@ public class BlueprintParser {
                                 .build())
                 // TODO: get recipe book category from somewhere
                 .category(null)
-                .onCraft((player, result, amount) -> {
-                    // TODO: Command dispatcher from config file
-                })
                 .result(parseItemPair(config.getResult(), Material.AIR));
     }
 

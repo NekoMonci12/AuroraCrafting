@@ -2,6 +2,7 @@ package gg.auroramc.crafting.config;
 
 import gg.auroramc.aurora.api.config.AuroraConfig;
 import gg.auroramc.aurora.api.config.decorators.IgnoreField;
+import gg.auroramc.aurora.api.config.premade.ItemConfig;
 import gg.auroramc.crafting.AuroraCrafting;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,9 +10,10 @@ import lombok.Setter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Getter
-public class RecipesConfig extends AuroraConfig {
+public class CraftingRecipesConfig extends AuroraConfig {
     @IgnoreField
     private String fileName;
 
@@ -21,10 +23,14 @@ public class RecipesConfig extends AuroraConfig {
     public static final class RecipeConfig {
         private String id;
         private String permission;
-        private String workbench = "default";
+        private String workbench;
         private Boolean shapeless = false;
         private String result;
+        private VanillaOptions vanillaOptions;
+        private DisplayOptions displayOptions;
         private List<String> ingredients;
+        private List<String> onCraft;
+        // This is legacy for backwards compatibility
         private List<String> lockedLore = new ArrayList<>();
 
         @Setter
@@ -32,7 +38,20 @@ public class RecipesConfig extends AuroraConfig {
         private String sourceFile;
     }
 
-    public RecipesConfig(File file) {
+    @Getter
+    public static final class VanillaOptions {
+        private String category;
+        private String group;
+        private String choiceType;
+    }
+
+    @Getter
+    public static final class DisplayOptions {
+        private Map<String, ItemConfig> items;
+        private List<String> lockedLore = new ArrayList<>();
+    }
+
+    public CraftingRecipesConfig(File file) {
         super(file);
         this.fileName = file.getName().replace(".yml", "");
     }
