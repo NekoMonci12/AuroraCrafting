@@ -104,7 +104,7 @@ public class RecipeRegistrar {
         handleCookingDiff(RecipeType.CAMPFIRE, configManager.getCampfireRecipes());
         handleCookingDiff(RecipeType.SMOKING, configManager.getSmokingRecipes());
         handleCookingDiff(RecipeType.FURNACE, configManager.getFurnaceRecipes());
-        handleSmithingDiff(RecipeType.SMITHING_TRANSFORM, configManager.getSmithingTransformRecipes());
+        handleSmithingDiff(RecipeType.SMITHING_TRANSFORM, configManager.getSmithingRecipes());
         updateClientRecipes();
     }
 }

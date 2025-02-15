@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 public class CookingRecipesConfig extends AuroraConfig {
     @IgnoreField
-    private String fileName;
+    private String sourcePath;
 
     private List<RecipeConfig> recipes = new ArrayList<>();
 
@@ -29,18 +29,21 @@ public class CookingRecipesConfig extends AuroraConfig {
 
         @Setter
         @IgnoreField
-        private String sourceFile;
+        private String sourcePath;
     }
 
     public CookingRecipesConfig(File file) {
         super(file);
-        this.fileName = file.getName().replace(".yml", "");
+        var target = "blueprints" + File.separator;
+        var absPath = file.getAbsolutePath();
+        var index = absPath.indexOf(target);
+        this.sourcePath = absPath.substring(index + target.length()).replace(".yml", "");
     }
 
     @Override
     public void load() {
         super.load();
-        recipes.forEach(recipe -> recipe.setSourceFile(fileName));
+        recipes.forEach(recipe -> recipe.setSourcePath(sourcePath));
 
         var it = recipes.iterator();
 
@@ -49,13 +52,13 @@ public class CookingRecipesConfig extends AuroraConfig {
 
             if (recipe.id == null) {
                 it.remove();
-                AuroraCrafting.logger().severe("Cooking recipe in " + fileName + " has no id, removing...");
+                AuroraCrafting.logger().severe("Cooking recipe in " + sourcePath + " has no id, removing...");
             } else if (recipe.result == null) {
                 it.remove();
-                AuroraCrafting.logger().severe("Cooking recipe in " + fileName + " with id " + recipe.id + " has no result, removing...");
+                AuroraCrafting.logger().severe("Cooking recipe in " + sourcePath + " with id " + recipe.id + " has no result, removing...");
             } else if (recipe.input == null) {
                 it.remove();
-                AuroraCrafting.logger().severe("Cooking recipe in " + fileName + " with id " + recipe.id + " has no input, removing...");
+                AuroraCrafting.logger().severe("Cooking recipe in " + sourcePath + " with id " + recipe.id + " has no input, removing...");
             }
         }
     }

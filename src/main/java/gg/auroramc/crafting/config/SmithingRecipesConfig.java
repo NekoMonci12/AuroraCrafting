@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 public class SmithingRecipesConfig extends AuroraConfig {
     @IgnoreField
-    private String fileName;
+    private String sourcePath;
 
     private List<RecipeConfig> recipes = new ArrayList<>();
 
@@ -24,22 +24,24 @@ public class SmithingRecipesConfig extends AuroraConfig {
         private String template;
         private String base;
         private String addition;
-        private boolean copyNbt = false;
 
         @Setter
         @IgnoreField
-        private String sourceFile;
+        private String sourcePath;
     }
 
     public SmithingRecipesConfig(File file) {
         super(file);
-        this.fileName = file.getName().replace(".yml", "");
+        var target = "blueprints" + File.separator;
+        var absPath = file.getAbsolutePath();
+        var index = absPath.indexOf(target);
+        this.sourcePath = absPath.substring(index + target.length()).replace(".yml", "");
     }
 
     @Override
     public void load() {
         super.load();
-        recipes.forEach(recipe -> recipe.setSourceFile(fileName));
+        recipes.forEach(recipe -> recipe.setSourcePath(sourcePath));
 
         var it = recipes.iterator();
 
@@ -48,11 +50,11 @@ public class SmithingRecipesConfig extends AuroraConfig {
 
             if (recipe.id == null) {
                 it.remove();
-                AuroraCrafting.logger().severe("Smithing transform recipe in " + fileName + " has no id removing...");
+                AuroraCrafting.logger().severe("Smithing transform recipe in " + sourcePath + " has no id removing...");
             }
             if(recipe.result == null) {
                 it.remove();
-                AuroraCrafting.logger().severe("Smithing transform Recipe in " + fileName + " with id " + recipe.id + " has no result removing...");
+                AuroraCrafting.logger().severe("Smithing transform Recipe in " + sourcePath + " with id " + recipe.id + " has no result removing...");
             }
         }
     }

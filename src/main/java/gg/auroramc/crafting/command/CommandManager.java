@@ -6,7 +6,7 @@ import co.aikar.commands.PaperCommandManager;
 import gg.auroramc.aurora.api.message.Chat;
 import gg.auroramc.aurora.api.message.Text;
 import gg.auroramc.crafting.AuroraCrafting;
-import gg.auroramc.crafting.config.menu.WorkbenchConfig;
+import gg.auroramc.crafting.config.WorkbenchConfig;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.util.List;

@@ -4,11 +4,13 @@ import gg.auroramc.crafting.AuroraCrafting;
 import gg.auroramc.crafting.config.menu.*;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,15 +33,15 @@ public class ConfigManager {
     private RecipeBookMenuConfig recipeBookMenuConfig;
     private RecipeBookCategoryConfig recipeBookCategoryConfig;
     private MerchantsMenuConfig merchantsMenuConfig;
+    private WorkbenchDefaultConfig workbenchDefaultConfig;
 
-    private Map<String, CraftingRecipesConfig> recipes;
+    private List<CraftingRecipesConfig> customRecipes;
 
     private List<CookingRecipesConfig.RecipeConfig> blastingRecipes;
     private List<CookingRecipesConfig.RecipeConfig> smokingRecipes;
     private List<CookingRecipesConfig.RecipeConfig> furnaceRecipes;
     private List<CookingRecipesConfig.RecipeConfig> campfireRecipes;
-
-    private List<SmithingRecipesConfig.RecipeConfig> smithingTransformRecipes;
+    private List<SmithingRecipesConfig.RecipeConfig> smithingRecipes;
 
     public ConfigManager(AuroraCrafting plugin) {
         this.plugin = plugin;
@@ -62,8 +64,6 @@ public class ConfigManager {
         disabledRecipesConfig = new DisabledRecipesConfig(plugin);
         disabledRecipesConfig.load();
 
-        workbenchConfig = loadWorkBenches();
-
         RecipeBookConfig.saveDefault(plugin);
         recipeBookConfig = new RecipeBookConfig(plugin);
         recipeBookConfig.load();
@@ -84,7 +84,13 @@ public class ConfigManager {
         merchantsMenuConfig = new MerchantsMenuConfig(plugin);
         merchantsMenuConfig.load();
 
-        recipes = getRecipesConfigs();
+        WorkbenchDefaultConfig.saveDefault(plugin);
+        workbenchDefaultConfig = new WorkbenchDefaultConfig(plugin);
+        workbenchDefaultConfig.load();
+
+        workbenchConfig = loadWorkBenches();
+
+        customRecipes = getRecipesConfigs();
 
         blastingRecipes = getCookingRecipesConfigs("blueprints/vanilla/blast_furnace").stream()
                 .flatMap(recipesConfig -> recipesConfig.getRecipes().stream())
@@ -102,7 +108,7 @@ public class ConfigManager {
                 .flatMap(recipesConfig -> recipesConfig.getRecipes().stream())
                 .collect(Collectors.toList());
 
-        smithingTransformRecipes = getSmithingRecipesConfigs().stream()
+        smithingRecipes = getSmithingRecipesConfigs().stream()
                 .flatMap(recipesConfig -> recipesConfig.getRecipes().stream())
                 .collect(Collectors.toList());
     }
@@ -114,7 +120,7 @@ public class ConfigManager {
                 Files.createDirectories(Path.of(plugin.getDataFolder().getPath(), "workbenches"));
                 Files.move(Path.of(plugin.getDataFolder().getPath(), "menus", "workbench.yml"), Path.of(plugin.getDataFolder().getPath(), "workbenches", "default.yml"));
             } else {
-                if (!Files.exists(Path.of(plugin.getDataFolder().getPath(), "workbenches", "default.yml"))) {
+                if (!Files.exists(Path.of(plugin.getDataFolder().getPath(), "workbenches"))) {
                     plugin.saveResource("workbenches/default.yml", false);
                 }
 
@@ -131,16 +137,46 @@ public class ConfigManager {
                     .toList();
 
             for (var file : fileList) {
-                var workbenchConfig = new WorkbenchConfig(file, file.getName().replace(".yml", ""));
-                workbenchConfig.load();
-                map.put(file.getName().replace(".yml", ""), workbenchConfig);
+                map.put(file.getName().replace(".yml", ""), getWorkbenchConfig(file));
             }
 
             return map;
         }
     }
 
-    private Map<String, CraftingRecipesConfig> getRecipesConfigs() {
+    private @NotNull WorkbenchConfig getWorkbenchConfig(File file) {
+        var workbenchConfig = new WorkbenchConfig(file, file.getName().replace(".yml", ""));
+
+        workbenchConfig.load();
+
+        if (workbenchConfig.getTitle() == null) {
+            workbenchConfig.setTitle(workbenchDefaultConfig.getTitle());
+        }
+
+        if (workbenchConfig.getRows() == null) {
+            workbenchConfig.setRows(workbenchDefaultConfig.getRows());
+        }
+
+        if (workbenchConfig.getFiller() == null) {
+            workbenchConfig.setFiller(workbenchDefaultConfig.getFiller());
+        }
+
+        if (workbenchConfig.getInvalidResultItem() == null) {
+            workbenchConfig.setInvalidResultItem(workbenchDefaultConfig.getInvalidResultItem());
+        }
+
+        if (workbenchConfig.getEmptyQuickCraftItem() == null) {
+            workbenchConfig.setEmptyQuickCraftItem(workbenchDefaultConfig.getEmptyQuickCraftItem());
+        }
+
+        if (workbenchConfig.getNoPermissionQuickCraftItem() == null) {
+            workbenchConfig.setNoPermissionQuickCraftItem(workbenchDefaultConfig.getNoPermissionQuickCraftItem());
+        }
+
+        return workbenchConfig;
+    }
+
+    private List<CraftingRecipesConfig> getRecipesConfigs() {
         Path recipesFolder = Path.of(plugin.getDataFolder().getPath(), "blueprints/aurora");
 
         if (Files.notExists(recipesFolder)) {
@@ -152,7 +188,7 @@ public class ConfigManager {
             }
         }
 
-        var recipes = new HashMap<String, CraftingRecipesConfig>();
+        var recipes = new ArrayList<CraftingRecipesConfig>();
 
         try (Stream<Path> paths = Files.walk(recipesFolder, 10)) {
             var fileList = paths
@@ -165,7 +201,7 @@ public class ConfigManager {
                 try {
                     CraftingRecipesConfig recipesConfig = new CraftingRecipesConfig(file);
                     recipesConfig.load();
-                    recipes.put(file.getName().replace(".yml", ""), recipesConfig);
+                    recipes.add(recipesConfig);
                 } catch (Exception e) {
                     AuroraCrafting.logger().severe("Failed to load recipe file: " + file.getName());
                     e.printStackTrace();

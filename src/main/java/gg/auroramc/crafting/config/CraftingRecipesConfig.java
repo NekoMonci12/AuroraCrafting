@@ -15,7 +15,7 @@ import java.util.Map;
 @Getter
 public class CraftingRecipesConfig extends AuroraConfig {
     @IgnoreField
-    private String fileName;
+    private String sourcePath;
 
     private List<RecipeConfig> recipes = new ArrayList<>();
 
@@ -35,7 +35,7 @@ public class CraftingRecipesConfig extends AuroraConfig {
 
         @Setter
         @IgnoreField
-        private String sourceFile;
+        private String sourcePath;
     }
 
     @Getter
@@ -53,14 +53,17 @@ public class CraftingRecipesConfig extends AuroraConfig {
 
     public CraftingRecipesConfig(File file) {
         super(file);
-        this.fileName = file.getName().replace(".yml", "");
+        var target = "blueprints" + File.separator;
+        var absPath = file.getAbsolutePath();
+        var index = absPath.indexOf(target);
+        this.sourcePath = absPath.substring(index + target.length()).replace(".yml", "");
     }
 
     @Override
     public void load() {
         super.load();
         recipes.forEach(recipe -> {
-            recipe.setSourceFile(fileName);
+            recipe.setSourcePath(sourcePath);
             var matrixSize = AuroraCrafting.getInstance().getConfigManager().getWorkbenchConfig().get(recipe.getWorkbench()).getMatrixSlots().size();
             if (!recipe.getShapeless() && recipe.getIngredients().size() < matrixSize) {
                 for (int i = recipe.getIngredients().size(); i < matrixSize; i++) {
