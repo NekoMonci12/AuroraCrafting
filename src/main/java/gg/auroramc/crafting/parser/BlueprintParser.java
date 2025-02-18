@@ -13,10 +13,7 @@ import gg.auroramc.crafting.config.CookingRecipesConfig;
 import gg.auroramc.crafting.config.CraftingRecipesConfig;
 import gg.auroramc.crafting.config.SmithingRecipesConfig;
 import lombok.RequiredArgsConstructor;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.translation.Translatable;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.recipe.CookingBookCategory;
@@ -35,7 +32,7 @@ public class BlueprintParser {
 
     public Blueprint parse(CraftingRecipesConfig.RecipeConfig config) {
         CraftingBookCategory vanillaCategory;
-        CraftingBlueprint.ChoiceType choiceType;
+        ChoiceType choiceType;
 
         try {
             vanillaCategory = CraftingBookCategory.valueOf(config.getVanillaOptions().getCategory().toUpperCase());
@@ -45,9 +42,9 @@ public class BlueprintParser {
         }
 
         try {
-            choiceType = CraftingBlueprint.ChoiceType.valueOf(config.getVanillaOptions().getChoiceType().toUpperCase());
+            choiceType = ChoiceType.valueOf(config.getVanillaOptions().getChoiceType().toUpperCase());
         } catch (IllegalArgumentException e) {
-            choiceType = CraftingBlueprint.ChoiceType.EXACT;
+            choiceType = ChoiceType.EXACT;
             AuroraCrafting.logger().warning("Invalid choice type: " + config.getVanillaOptions().getChoiceType() + " in recipe: " + recipeId);
         }
 
@@ -122,10 +119,20 @@ public class BlueprintParser {
     }
 
     public Blueprint parse(SmithingRecipesConfig.RecipeConfig config) {
+        ChoiceType choiceType;
+
+        try {
+            choiceType = ChoiceType.valueOf(config.getVanillaOptions().getChoiceType().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            choiceType = ChoiceType.EXACT;
+            AuroraCrafting.logger().warning("Invalid choice type: " + config.getVanillaOptions().getChoiceType() + " in recipe: " + recipeId);
+        }
+
         var ret = SmithingBlueprint.smithingBlueprint(workbench, config.getId())
                 .template(parseItemPair(config.getTemplate(), Material.BARRIER))
                 .base(parseItemPair(config.getBase(), Material.BARRIER))
                 .addition(parseItemPair(config.getAddition(), Material.BARRIER))
+                .vanillaOptions(SmithingBlueprint.VanillaOptions.builder().choiceType(choiceType).build())
                 .permission(config.getPermission())
                 .displayOptions(Blueprint.DisplayOptions.builder()
                         .items(config.getDisplayOptions().getItems())

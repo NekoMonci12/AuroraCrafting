@@ -28,6 +28,7 @@ public class SmithingRecipesConfig extends AuroraConfig {
         private String addition;
         private String permission;
         private DisplayOptions displayOptions;
+        private VanillaOptions vanillaOptions;
         private Map<Integer, MergeOptions> mergeOptions;
         private List<String> onCraft;
 
@@ -46,6 +47,11 @@ public class SmithingRecipesConfig extends AuroraConfig {
     public static final class MergeOptions {
         private Boolean enchants = false;
         private Boolean trim = false;
+    }
+
+    @Getter
+    public static final class VanillaOptions {
+        private String choiceType;
     }
 
     public SmithingRecipesConfig(File file) {

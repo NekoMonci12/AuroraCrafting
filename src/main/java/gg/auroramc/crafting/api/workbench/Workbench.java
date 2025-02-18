@@ -44,6 +44,16 @@ public abstract class Workbench {
         return blueprints.values();
     }
 
+    public Collection<Blueprint> getBlueprints(BlueprintType... type) {
+        if (type.length == 0) return getBlueprints();
+        var result = new ArrayList<Blueprint>();
+        for (var t : type) {
+            var lookup = categorizedBlueprints.get(t);
+            if (lookup != null) result.addAll(lookup.values());
+        }
+        return result;
+    }
+
     public Blueprint getBlueprint(String id) {
         return blueprints.get(id);
     }

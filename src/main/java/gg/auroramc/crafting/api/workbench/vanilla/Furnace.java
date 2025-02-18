@@ -1,23 +1,11 @@
 package gg.auroramc.crafting.api.workbench.vanilla;
 
-import gg.auroramc.crafting.api.blueprint.BlueprintContext;
-import gg.auroramc.crafting.api.blueprint.BlueprintType;
 import gg.auroramc.crafting.api.blueprint.CookingBlueprint;
-import gg.auroramc.crafting.api.workbench.Workbench;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class Furnace extends Workbench {
+public class Furnace extends VanillaWorkbench<CookingBlueprint> {
     public Furnace() {
-        super("vanilla-furnace", 0, List.of(1));
-    }
-
-    public @Nullable CookingBlueprint getBlueprint(BlueprintContext context) {
-        return (CookingBlueprint) this.getBlueprint(BlueprintType.FURNACE, context);
-    }
-
-    public void addBlueprint(CookingBlueprint blueprint) {
-        this.addBlueprint(BlueprintType.FURNACE, blueprint);
+        super("vanilla-furnace", 0, List.of(1), VanillaType.FURNACE);
     }
 }
