@@ -19,6 +19,7 @@ public class VanillaWorkbench<T extends Blueprint> extends Workbench {
     @Getter
     protected final VanillaType type;
     private final Set<NamespacedKey> registeredRecipes = new HashSet<>();
+    protected boolean registerRecipes = true;
 
     public VanillaWorkbench(String id, int resultSlot, List<Integer> matrixSlots, VanillaType type) {
         super(id, resultSlot, matrixSlots);
@@ -38,6 +39,7 @@ public class VanillaWorkbench<T extends Blueprint> extends Workbench {
     @Override
     public void freeze() {
         super.freeze();
+        if (!registerRecipes) return;
         for (var blueprint : getBlueprints(type.getBlueprintTypes())) {
             var recipe = BlueprintAdapter.adapt(blueprint);
             var success = Bukkit.addRecipe(recipe);
@@ -52,6 +54,7 @@ public class VanillaWorkbench<T extends Blueprint> extends Workbench {
     }
 
     public void dispose() {
+        if (!registerRecipes) return;
         for (var key : registeredRecipes) {
             Bukkit.removeRecipe(key);
         }

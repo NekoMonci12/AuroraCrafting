@@ -5,6 +5,9 @@ import gg.auroramc.crafting.api.blueprint.BlueprintContext;
 import gg.auroramc.crafting.api.blueprint.BlueprintLookupGenerator;
 import gg.auroramc.crafting.api.blueprint.BlueprintType;
 import lombok.Getter;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -74,6 +77,15 @@ public abstract class Workbench {
             }
         }
         return null;
+    }
+
+    public BlueprintContext createContext(Player player, Inventory inventory) {
+        var matrix = new ItemStack[matrixSlots.size()];
+        for (int i = 0; i < matrixSlots.size(); i++) {
+            var item = inventory.getItem(matrixSlots.get(i));
+            matrix[i] = item == null ? ItemStack.empty() : item;
+        }
+        return new BlueprintContext(player, matrix);
     }
 
     public void freeze() {

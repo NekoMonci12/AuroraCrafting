@@ -6,6 +6,7 @@ import java.util.List;
 
 public class SmithingTable extends VanillaWorkbench<SmithingBlueprint> {
     public SmithingTable() {
-        super("vanilla-smithing-table", 0, List.of(1, 2, 3), VanillaType.SMITHING_TABLE);
+        super("vanilla-smithing-table", 3, List.of(0, 1, 2), VanillaType.SMITHING_TABLE);
+        registerRecipes = false;
     }
 }
