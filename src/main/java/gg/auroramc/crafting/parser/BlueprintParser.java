@@ -183,6 +183,9 @@ public class BlueprintParser {
     }
 
     private ItemPair parseItemPair(String input, Material invalidMaterial) {
+        if (input == null) {
+            return new ItemPair(TypeId.from(Material.AIR), 0);
+        }
         var split = input.split("/");
         if (split[0].isEmpty()) {
             return new ItemPair(TypeId.from(Material.AIR), 0);
