@@ -491,11 +491,11 @@ public class CraftMenu implements InventoryHolder {
         for (int i = 0; i < matrixSlots.size(); i++) {
             inventory.setItem(matrixSlots.get(i), newMatrix[i]);
         }
-        if (timesCraftable > timesCrafted) {
-            inventory.setItem(resultSlot, blueprint.getResultItem(this.context(inventory)));
-        } else {
-            inventory.setItem(resultSlot, invalidResultItem);
-        }
+//        if (timesCraftable > timesCrafted) {
+//            setResult(blueprint.getResultItem(this.context(inventory)));
+//        } else {
+//            setInvalidResult();
+//        }
 
         updateResult();
     }
