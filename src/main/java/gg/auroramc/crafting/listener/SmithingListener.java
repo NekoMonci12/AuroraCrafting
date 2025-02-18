@@ -6,6 +6,7 @@ import gg.auroramc.crafting.api.blueprint.BlueprintType;
 import gg.auroramc.crafting.util.InventoryUtils;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -94,21 +95,29 @@ public class SmithingListener implements Listener {
 
             if (timesCrafted == 1) {
                 updateMatrix(player, event.getInventory(), blueprint.calcRemainingIngredientMatrix(context, 1));
+                player.getInventory().addItem(currentItem);
+                player.playSound(player, Sound.BLOCK_SMITHING_TABLE_USE, 1f, 1f);
             } else {
                 var amount = timesCrafted * blueprint.getResult().amount();
                 var stacks = ItemUtils.createStacksFromAmount(currentItem, amount);
                 player.getInventory().addItem(stacks);
                 updateMatrix(player, event.getInventory(), blueprint.calcRemainingIngredientMatrix(context, timesCrafted));
+                player.playSound(player, Sound.BLOCK_SMITHING_TABLE_USE, 1f, 1f);
             }
         } else {
             if (event.getCursor().isEmpty()) {
                 updateMatrix(player, event.getInventory(), blueprint.calcRemainingIngredientMatrix(context, 1));
                 player.getScheduler().run(plugin, (t) -> player.setItemOnCursor(currentItem), null);
+                player.playSound(player, Sound.BLOCK_SMITHING_TABLE_USE, 1f, 1f);
             } else {
                 if (event.getCursor().isSimilar(currentItem)) {
                     var maxAmount = event.getCursor().getMaxStackSize() - event.getCursor().getAmount();
                     if (blueprint.getResult().amount() <= maxAmount) {
                         updateMatrix(player, event.getInventory(), blueprint.calcRemainingIngredientMatrix(context, 1));
+                        player.playSound(player, Sound.BLOCK_SMITHING_TABLE_USE, 1f, 1f);
+                        player.getScheduler().run(plugin, (t) -> {
+                            player.getItemOnCursor().setAmount(event.getCursor().getAmount() + blueprint.getResult().amount());
+                        }, null);
                     }
                 }
             }
