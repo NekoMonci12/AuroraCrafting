@@ -4,11 +4,13 @@ import gg.auroramc.aurora.api.config.AuroraConfig;
 import gg.auroramc.aurora.api.config.decorators.IgnoreField;
 import gg.auroramc.aurora.api.config.premade.ItemConfig;
 import gg.auroramc.crafting.AuroraCrafting;
+import gg.auroramc.crafting.api.blueprint.ChoiceType;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,8 +29,8 @@ public class SmithingRecipesConfig extends AuroraConfig {
         private String base;
         private String addition;
         private String permission;
-        private DisplayOptions displayOptions;
-        private VanillaOptions vanillaOptions;
+        private DisplayOptions displayOptions = new DisplayOptions();
+        private VanillaOptions vanillaOptions = new VanillaOptions();
         private Map<Integer, MergeOptions> mergeOptions;
         private List<String> onCraft;
 
@@ -39,7 +41,7 @@ public class SmithingRecipesConfig extends AuroraConfig {
 
     @Getter
     public static final class DisplayOptions {
-        private Map<String, ItemConfig> items;
+        private Map<String, ItemConfig> items = new HashMap<>();
         private List<String> lockedLore = new ArrayList<>();
     }
 
@@ -51,7 +53,7 @@ public class SmithingRecipesConfig extends AuroraConfig {
 
     @Getter
     public static final class VanillaOptions {
-        private String choiceType;
+        private String choiceType = ChoiceType.ITEM_TYPE.name();
     }
 
     public SmithingRecipesConfig(File file) {

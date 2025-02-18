@@ -31,7 +31,7 @@ recipes:
       category: "equipment"
       group: "vanilla grouping stuff"
       # item-type for dynamic choice or exact for items that doesn't change
-      choice-type: "item-type"
+      choice-type: "item_type"
     # Stuff to customize looks in various menus
     display-options:
       # context based menu item definitions

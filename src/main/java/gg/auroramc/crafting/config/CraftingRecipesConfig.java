@@ -4,11 +4,13 @@ import gg.auroramc.aurora.api.config.AuroraConfig;
 import gg.auroramc.aurora.api.config.decorators.IgnoreField;
 import gg.auroramc.aurora.api.config.premade.ItemConfig;
 import gg.auroramc.crafting.AuroraCrafting;
+import gg.auroramc.crafting.api.blueprint.ChoiceType;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,8 +28,8 @@ public class CraftingRecipesConfig extends AuroraConfig {
         private String workbench;
         private Boolean shapeless = false;
         private String result;
-        private VanillaOptions vanillaOptions;
-        private DisplayOptions displayOptions;
+        private VanillaOptions vanillaOptions = new VanillaOptions();
+        private DisplayOptions displayOptions = new DisplayOptions();
         private Map<Integer, MergeOptions> mergeOptions;
         private List<String> ingredients;
         private List<String> onCraft;
@@ -43,7 +45,7 @@ public class CraftingRecipesConfig extends AuroraConfig {
     public static final class VanillaOptions {
         private String category;
         private String group;
-        private String choiceType;
+        private String choiceType = ChoiceType.ITEM_TYPE.name();
     }
 
     @Getter
@@ -54,7 +56,7 @@ public class CraftingRecipesConfig extends AuroraConfig {
 
     @Getter
     public static final class DisplayOptions {
-        private Map<String, ItemConfig> items;
+        private Map<String, ItemConfig> items = new HashMap<>();
         private List<String> lockedLore = new ArrayList<>();
     }
 

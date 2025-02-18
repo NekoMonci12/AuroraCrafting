@@ -160,35 +160,35 @@ public class ConfigManager {
             workbenchConfig.setRows(workbenchDefaultConfig.getRows());
         }
 
-        if (workbenchConfig.getFiller().getMaterial() == null) {
+        if (workbenchConfig.getFiller() == null) {
             workbenchConfig.setFiller(workbenchDefaultConfig.getFiller());
         }
 
-        if (workbenchConfig.getInvalidResultItem().getMaterial() == null) {
+        if (workbenchConfig.getInvalidResultItem() == null) {
             workbenchConfig.setInvalidResultItem(workbenchDefaultConfig.getInvalidResultItem());
         }
 
-        if (workbenchConfig.getEmptyQuickCraftItem().getMaterial() == null) {
+        if (workbenchConfig.getEmptyQuickCraftItem() == null) {
             workbenchConfig.setEmptyQuickCraftItem(workbenchDefaultConfig.getEmptyQuickCraftItem());
         }
 
-        if (workbenchConfig.getNoPermissionQuickCraftItem().getMaterial() == null) {
+        if (workbenchConfig.getNoPermissionQuickCraftItem() == null) {
             workbenchConfig.setNoPermissionQuickCraftItem(workbenchDefaultConfig.getNoPermissionQuickCraftItem());
         }
 
-        if (workbenchConfig.getBlueprintCompletedItem().getMaterial() == null) {
+        if (workbenchConfig.getBlueprintCompletedItem() == null) {
             workbenchConfig.setBlueprintCompletedItem(workbenchDefaultConfig.getBlueprintCompletedItem());
         }
 
-        if (workbenchConfig.getBlueprintNotCompletedItem().getMaterial() == null) {
+        if (workbenchConfig.getBlueprintNotCompletedItem() == null) {
             workbenchConfig.setBlueprintNotCompletedItem(workbenchDefaultConfig.getBlueprintNotCompletedItem());
         }
 
-        if (workbenchConfig.getNextRecipeItem().getMaterial() == null) {
+        if (workbenchConfig.getNextRecipeItem() == null) {
             workbenchConfig.setNextRecipeItem(workbenchDefaultConfig.getNextRecipeItem());
         }
 
-        if (workbenchConfig.getPreviousRecipeItem().getMaterial() == null) {
+        if (workbenchConfig.getPreviousRecipeItem() == null) {
             workbenchConfig.setPreviousRecipeItem(workbenchDefaultConfig.getPreviousRecipeItem());
         }
 

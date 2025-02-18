@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +29,7 @@ public class CookingRecipesConfig extends AuroraConfig {
         private Integer cookingTime = 200;
         private String category = "MISC";
         private String group;
-        private DisplayOptions displayOptions;
+        private DisplayOptions displayOptions = new DisplayOptions();
 
         @Setter
         @IgnoreField
@@ -45,7 +46,7 @@ public class CookingRecipesConfig extends AuroraConfig {
 
     @Getter
     public static final class DisplayOptions {
-        private Map<String, ItemConfig> items;
+        private Map<String, ItemConfig> items = new HashMap<>();
         private List<String> lockedLore = new ArrayList<>();
     }
 
