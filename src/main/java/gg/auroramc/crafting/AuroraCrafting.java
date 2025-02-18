@@ -15,7 +15,7 @@ import gg.auroramc.crafting.api.workbench.WorkbenchRegistry;
 import gg.auroramc.crafting.command.CommandManager;
 import gg.auroramc.crafting.config.ConfigManager;
 import gg.auroramc.crafting.hooks.HookManager;
-import gg.auroramc.crafting.listener.ConnectionListener;
+import gg.auroramc.crafting.listener.RecipeDiscoverListener;
 import gg.auroramc.crafting.listener.CraftingTableInteractListener;
 import gg.auroramc.crafting.loader.BlueprintLoader;
 import gg.auroramc.crafting.loader.BookLoader;
@@ -67,7 +67,7 @@ public class AuroraCrafting extends AuroraCraftingPlugin {
         commandManager = new CommandManager(this);
         commandManager.reload();
         Bukkit.getPluginManager().registerEvents(new MenuListener(this), this);
-        Bukkit.getPluginManager().registerEvents(new ConnectionListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new RecipeDiscoverListener(this), this);
         if (configManager.getConfig().getOpenInsteadOfCraftingTable() || configManager.getConfig().getOpenShiftClickCraftingTable()) {
             Bukkit.getPluginManager().registerEvents(new CraftingTableInteractListener(this), this);
         }
