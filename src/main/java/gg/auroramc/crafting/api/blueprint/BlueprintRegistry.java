@@ -23,6 +23,14 @@ public class BlueprintRegistry {
         return resultLookup.getOrDefault(item, Collections.emptyList());
     }
 
+    public Blueprint getBlueprintFor(TypeId item) {
+        var list = resultLookup.getOrDefault(item, Collections.emptyList());
+        if (list.isEmpty()) {
+            return null;
+        }
+        return list.getFirst();
+    }
+
     public Collection<Blueprint> getBlueprints() {
         return blueprints.values();
     }

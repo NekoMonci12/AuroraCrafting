@@ -44,7 +44,6 @@ public class BookLoader {
         var blueprintRegistry = plugin.getBlueprintRegistry();
 
         for (var blueprint : blueprintRegistry.getBlueprints()) {
-            if (blueprint.getCategory() != null) continue;
             for (var category : plugin.getBook().getRegistry()) {
                 var categoryConfig = configIndex.get(category.getId());
                 if (categoryConfig == null) continue;

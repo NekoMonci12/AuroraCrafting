@@ -2,11 +2,15 @@ title: "Furnace recipe"
 rows: 4
 
 slots:
-  fuel: 19
-  input: 10
-  result: 16
+  fuel: 20
+  input: 11
+  result: 15
 
 items:
+  filler:
+    material: black_stained_glass_pane
+    name: ""
+    hide-tooltip: true
   fuel:
     material: coal
   back:

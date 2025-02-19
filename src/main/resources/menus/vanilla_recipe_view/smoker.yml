@@ -2,9 +2,9 @@ title: "Smoker recipe"
 rows: 4
 
 slots:
-  fuel: 19
-  input: 10
-  result: 16
+  fuel: 20
+  input: 11
+  result: 15
 
 items:
   filler:

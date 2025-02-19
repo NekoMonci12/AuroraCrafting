@@ -2,8 +2,8 @@ title: "Campfire recipe"
 rows: 4
 
 slots:
-  input: 10
-  result: 16
+  input: 11
+  result: 15
 
 items:
   filler:
