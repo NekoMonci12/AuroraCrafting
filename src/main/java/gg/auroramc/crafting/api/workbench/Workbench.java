@@ -25,16 +25,15 @@ public abstract class Workbench {
     @Getter
     protected final List<Integer> matrixSlots;
     @Getter
-    protected final boolean square;
+    protected boolean square;
     @Getter
-    protected final int craftingSize;
-
+    protected int craftingSize;
 
     public Workbench(String id, int resultSlot, List<Integer> matrixSlots) {
         this.id = id;
         this.resultSlot = resultSlot;
         this.matrixSlots = matrixSlots;
-        this.square = Square.isSquareCraftingArea(matrixSlots);
+        this.square = Square.isSquareCraftingArea(matrixSlots, 9);
 
         if (square) {
             this.craftingSize = (int) Math.sqrt(matrixSlots.size());

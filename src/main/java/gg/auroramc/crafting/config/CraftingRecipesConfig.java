@@ -74,8 +74,12 @@ public class CraftingRecipesConfig extends AuroraConfig {
         super.load();
         recipes.forEach(recipe -> {
             recipe.setSourcePath(sourcePath);
-            var matrixSize = AuroraCrafting.getInstance().getConfigManager().getWorkbenchConfig().stream().filter(w -> w.getId().equals(recipe.getWorkbench())).findFirst().get().getMatrixSlots().size();
-            if (!recipe.getShapeless() && recipe.getIngredients().size() < matrixSize) {
+            var matrix = AuroraCrafting.getInstance().getConfigManager().getWorkbenchConfig().stream().filter(w -> w.getId().equals(recipe.getWorkbench())).findFirst();
+            int matrixSize = 9;
+            if (matrix.isPresent()) {
+                matrixSize = matrix.get().getMatrixSlots().size();
+            }
+            if (recipe.getIngredients().size() < matrixSize) {
                 for (int i = recipe.getIngredients().size(); i < matrixSize; i++) {
                     recipe.getIngredients().add("");
                 }

@@ -35,9 +35,33 @@ public class BlueprintLoader {
                     } else {
                         workbench.addBlueprint(BlueprintType.SHAPED, blueprint);
                     }
-                    duplicates.computeIfAbsent(recipe.getId(), k -> new ArrayList<>());
+                    duplicates.computeIfAbsent(recipe.getId(), k -> new ArrayList<>()).add(recipe.getSourcePath());
                 } catch (Exception e) {
                     AuroraCrafting.logger().severe("Failed to load blueprint " + recipe.getId() + " in source: " + recipe.getSourcePath() + ", reason:" + e.getMessage());
+                }
+            }
+        }
+
+        for (var config : manager.getCraftingTableRecipes()) {
+            for (var recipe : config.getRecipes()) {
+                if (duplicates.containsKey(recipe.getId())) {
+                    duplicates.get(recipe.getId()).add(recipe.getSourcePath());
+                    AuroraCrafting.logger().severe("Failed to load blueprint " + recipe.getId() + ": Duplicate recipe ID, skipping... Source: " + recipe.getSourcePath() + " other sources: " + duplicates.get(recipe.getId()));
+                    continue;
+                }
+
+                var workbench = plugin.getWorkbenchRegistry().getCraftingTable();
+                try {
+                    var blueprint = BlueprintParser.from(workbench, null, recipe.getId()).parse(recipe);
+                    if (recipe.getShapeless()) {
+                        workbench.addBlueprint(BlueprintType.SHAPELESS, blueprint);
+                    } else {
+                        workbench.addBlueprint(BlueprintType.SHAPED, blueprint);
+                    }
+                    duplicates.computeIfAbsent(recipe.getId(), k -> new ArrayList<>()).add(recipe.getSourcePath());
+                } catch (Exception e) {
+                    AuroraCrafting.logger().severe("Failed to load blueprint " + recipe.getId() + " in source: " + recipe.getSourcePath() + ", reason:" + e.getMessage());
+                    e.printStackTrace();
                 }
             }
         }
@@ -52,7 +76,7 @@ public class BlueprintLoader {
             try {
                 var blueprint = BlueprintParser.from(workbench, null, recipe.getId()).parse(recipe);
                 workbench.addBlueprint(BlueprintType.SMITHING, blueprint);
-                duplicates.computeIfAbsent(recipe.getId(), k -> new ArrayList<>());
+                duplicates.computeIfAbsent(recipe.getId(), k -> new ArrayList<>()).add(recipe.getSourcePath());
             } catch (Exception e) {
                 AuroraCrafting.logger().severe("Failed to load blueprint " + recipe.getId() + " in source: " + recipe.getSourcePath() + ", reason:" + e.getMessage());
             }
@@ -68,7 +92,7 @@ public class BlueprintLoader {
             try {
                 var blueprint = BlueprintParser.from(workbench, null, recipe.getId()).parse(recipe, CookingBlueprint.Type.FURNACE);
                 workbench.addBlueprint(BlueprintType.FURNACE, blueprint);
-                duplicates.computeIfAbsent(recipe.getId(), k -> new ArrayList<>());
+                duplicates.computeIfAbsent(recipe.getId(), k -> new ArrayList<>()).add(recipe.getSourcePath());
             } catch (Exception e) {
                 AuroraCrafting.logger().severe("Failed to load blueprint " + recipe.getId() + " in source: " + recipe.getSourcePath() + ", reason:" + e.getMessage());
             }
@@ -84,7 +108,7 @@ public class BlueprintLoader {
             try {
                 var blueprint = BlueprintParser.from(workbench, null, recipe.getId()).parse(recipe, CookingBlueprint.Type.BLAST_FURNACE);
                 workbench.addBlueprint(BlueprintType.BLASTING, blueprint);
-                duplicates.computeIfAbsent(recipe.getId(), k -> new ArrayList<>());
+                duplicates.computeIfAbsent(recipe.getId(), k -> new ArrayList<>()).add(recipe.getSourcePath());
             } catch (Exception e) {
                 AuroraCrafting.logger().severe("Failed to load blueprint " + recipe.getId() + " in source: " + recipe.getSourcePath() + ", reason:" + e.getMessage());
             }
@@ -100,7 +124,7 @@ public class BlueprintLoader {
             try {
                 var blueprint = BlueprintParser.from(workbench, null, recipe.getId()).parse(recipe, CookingBlueprint.Type.SMOKER);
                 workbench.addBlueprint(BlueprintType.SMOKER, blueprint);
-                duplicates.computeIfAbsent(recipe.getId(), k -> new ArrayList<>());
+                duplicates.computeIfAbsent(recipe.getId(), k -> new ArrayList<>()).add(recipe.getSourcePath());
             } catch (Exception e) {
                 AuroraCrafting.logger().severe("Failed to load blueprint " + recipe.getId() + " in source: " + recipe.getSourcePath() + ", reason:" + e.getMessage());
             }
@@ -116,7 +140,7 @@ public class BlueprintLoader {
             try {
                 var blueprint = BlueprintParser.from(workbench, null, recipe.getId()).parse(recipe, CookingBlueprint.Type.CAMPFIRE);
                 workbench.addBlueprint(BlueprintType.CAMPFIRE, blueprint);
-                duplicates.computeIfAbsent(recipe.getId(), k -> new ArrayList<>());
+                duplicates.computeIfAbsent(recipe.getId(), k -> new ArrayList<>()).add(recipe.getSourcePath());
             } catch (Exception e) {
                 AuroraCrafting.logger().severe("Failed to load blueprint " + recipe.getId() + " in source: " + recipe.getSourcePath() + ", reason:" + e.getMessage());
             }

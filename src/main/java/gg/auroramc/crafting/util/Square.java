@@ -5,15 +5,15 @@ import java.util.List;
 import java.util.Set;
 
 public class Square {
-    public static boolean isSquareCraftingArea(List<Integer> matrixSlots) {
+    public static boolean isSquareCraftingArea(List<Integer> matrixSlots, int gridSize) {
         if (matrixSlots.isEmpty()) return false;
 
         // Find min/max row & col to determine bounding box
-        int minRow = 9, maxRow = 0, minCol = 9, maxCol = 0;
+        int minRow = gridSize, maxRow = 0, minCol = gridSize, maxCol = 0;
 
         for (int slot : matrixSlots) {
-            int row = slot / 9;
-            int col = slot % 9;
+            int row = slot / gridSize;
+            int col = slot % gridSize;
 
             minRow = Math.min(minRow, row);
             maxRow = Math.max(maxRow, row);
@@ -31,7 +31,7 @@ public class Square {
         Set<Integer> slotSet = new HashSet<>(matrixSlots);
         for (int r = minRow; r < minRow + height; r++) {
             for (int c = minCol; c < minCol + width; c++) {
-                if (!slotSet.contains(r * 9 + c)) {
+                if (!slotSet.contains(r * gridSize + c)) {
                     return false;
                 }
             }

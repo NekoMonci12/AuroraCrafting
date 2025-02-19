@@ -3,82 +3,73 @@ package gg.auroramc.crafting.listener;
 import gg.auroramc.aurora.api.util.ItemUtils;
 import gg.auroramc.crafting.AuroraCrafting;
 import gg.auroramc.crafting.api.blueprint.BlueprintType;
-import gg.auroramc.crafting.api.event.RegistryLoadedEvent;
 import gg.auroramc.crafting.util.InventoryUtils;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.PrepareSmithingEvent;
-import org.bukkit.inventory.*;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.inventory.CraftingInventory;
+import org.bukkit.inventory.CraftingRecipe;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 @RequiredArgsConstructor
-public class SmithingListener implements Listener {
+public class CraftingListener implements Listener {
     private final AuroraCrafting plugin;
-    private final Map<ItemStack, List<Recipe>> recipeCache = new HashMap<>(100);
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPrepareSmithing(PrepareSmithingEvent event) {
+    public void onPrepareCrafting(PrepareItemCraftEvent event) {
         if (!(event.getViewers().getFirst() instanceof Player player)) return;
 
-        var workbench = plugin.getWorkbenchRegistry().getSmithingTable();
+        var workbench = plugin.getWorkbenchRegistry().getCraftingTable();
         var context = workbench.createContext(player, event.getInventory());
-        var blueprint = workbench.lookupBlueprint(context, BlueprintType.SMITHING);
+        var blueprint = workbench.lookupBlueprint(context, BlueprintType.SHAPED, BlueprintType.SHAPELESS);
 
         boolean isAuroraRecipe = false;
 
-        if (event.getResult() != null) {
-            var recipes = recipeCache.computeIfAbsent(event.getResult(),
-                    (k) -> Bukkit.getRecipesFor(event.getResult()).stream().filter(r -> r instanceof SmithingRecipe).toList());
-            for (var r : recipes) {
-                if (((SmithingRecipe) r).getKey().getNamespace().equals("aurora")) {
-                    isAuroraRecipe = true;
-                    break;
-                }
+        if (event.getRecipe() instanceof CraftingRecipe recipe) {
+            if (recipe.getKey().getNamespace().equals("aurora")) {
+                isAuroraRecipe = true;
             }
         }
 
         if (blueprint == null) {
             if (isAuroraRecipe) {
-                event.setResult(null);
+                event.getInventory().setResult(null);
             }
             return;
         }
 
         if (!blueprint.hasAccess(player)) {
-            event.setResult(null);
+            event.getInventory().setResult(null);
             return;
         }
 
         if (blueprint.getTimesCraftable(context) <= 0) {
             if (isAuroraRecipe) {
-                event.setResult(null);
+                event.getInventory().setResult(null);
             }
             return;
         }
 
-        event.setResult(blueprint.getResultItem(context));
+        event.getInventory().setResult(blueprint.getResultItem(context));
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onSmithing(InventoryClickEvent event) {
+    public void onCraftItem(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) return;
-        if (!(event.getClickedInventory() instanceof SmithingInventory)) return;
+        if (!(event.getClickedInventory() instanceof CraftingInventory craftingInventory)) return;
 
-        var workbench = plugin.getWorkbenchRegistry().getSmithingTable();
+        var workbench = plugin.getWorkbenchRegistry().getCraftingTable();
         if (event.getSlot() != workbench.getResultSlot()) return;
 
-        var context = workbench.createContext(player, event.getInventory());
-        var blueprint = workbench.lookupBlueprint(context, BlueprintType.SMITHING);
+        var context = workbench.createContext(player, craftingInventory);
+        var blueprint = workbench.lookupBlueprint(context, BlueprintType.SHAPED, BlueprintType.SHAPELESS);
 
         if (blueprint == null) {
             return;
@@ -110,25 +101,21 @@ public class SmithingListener implements Listener {
             if (timesCrafted == 1) {
                 updateMatrix(player, event.getInventory(), blueprint.calcRemainingIngredientMatrix(context, 1));
                 player.getInventory().addItem(currentItem);
-                player.playSound(player, Sound.BLOCK_SMITHING_TABLE_USE, 1f, 1f);
             } else {
                 var amount = timesCrafted * blueprint.getResult().amount();
                 var stacks = ItemUtils.createStacksFromAmount(currentItem, amount);
                 player.getInventory().addItem(stacks);
                 updateMatrix(player, event.getInventory(), blueprint.calcRemainingIngredientMatrix(context, timesCrafted));
-                player.playSound(player, Sound.BLOCK_SMITHING_TABLE_USE, 1f, 1f);
             }
         } else {
             if (event.getCursor().isEmpty()) {
                 updateMatrix(player, event.getInventory(), blueprint.calcRemainingIngredientMatrix(context, 1));
                 player.getScheduler().run(plugin, (t) -> player.setItemOnCursor(currentItem), null);
-                player.playSound(player, Sound.BLOCK_SMITHING_TABLE_USE, 1f, 1f);
             } else {
                 if (event.getCursor().isSimilar(currentItem)) {
                     var maxAmount = event.getCursor().getMaxStackSize() - event.getCursor().getAmount();
                     if (blueprint.getResult().amount() <= maxAmount) {
                         updateMatrix(player, event.getInventory(), blueprint.calcRemainingIngredientMatrix(context, 1));
-                        player.playSound(player, Sound.BLOCK_SMITHING_TABLE_USE, 1f, 1f);
                         player.getScheduler().run(plugin, (t) -> {
                             player.getItemOnCursor().setAmount(event.getCursor().getAmount() + blueprint.getResult().amount());
                         }, null);
@@ -136,23 +123,16 @@ public class SmithingListener implements Listener {
                 }
             }
         }
-
-    }
-
-    @EventHandler
-    public void onRegistryReload(RegistryLoadedEvent event) {
-        recipeCache.clear();
     }
 
     private void updateMatrix(Player player, Inventory inventory, ItemStack[] resultingMatrix) {
-        var workbench = plugin.getWorkbenchRegistry().getSmithingTable();
+        var workbench = plugin.getWorkbenchRegistry().getCraftingTable();
         run(player, () -> {
             for (var i = 0; i < workbench.getMatrixSlots().size(); i++) {
                 inventory.setItem(workbench.getMatrixSlots().get(i), resultingMatrix[i]);
             }
         });
     }
-
 
     private void run(Player player, Runnable runnable) {
         runnable.run();

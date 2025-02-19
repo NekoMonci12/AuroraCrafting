@@ -27,7 +27,7 @@ public class BlueprintAdapter {
     }
 
     public static ShapedRecipe adapt(ShapedBlueprint blueprint) {
-        return ShapedRecipeBuilder.shapedRecipe(blueprint.getId(), blueprint.getVanillaOptions().getChoiceType())
+        return ShapedRecipeBuilder.shapedRecipe(blueprint.getId(), blueprint.getVanillaOptions().getChoiceType(), blueprint.isSymmetry())
                 .category(blueprint.getVanillaOptions().getCategory())
                 .group(blueprint.getVanillaOptions().getGroup())
                 .ingredients(blueprint.getIngredientItems())
