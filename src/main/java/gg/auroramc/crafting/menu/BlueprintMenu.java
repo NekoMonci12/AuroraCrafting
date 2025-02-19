@@ -10,14 +10,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 @AllArgsConstructor
-public class RecipeMenu {
+public class BlueprintMenu {
     private final AuroraCrafting plugin;
     private final Player player;
     private final Blueprint blueprint;
     private final Runnable backAction;
 
-    public static RecipeMenu recipeMenu(AuroraCrafting plugin, Player player, Blueprint recipe, Runnable backAction) {
-        return new RecipeMenu(plugin, player, recipe, backAction);
+    public static BlueprintMenu blueprintMenu(AuroraCrafting plugin, Player player, Blueprint recipe, Runnable backAction) {
+        return new BlueprintMenu(plugin, player, recipe, backAction);
     }
 
     public void open() {
@@ -47,7 +47,7 @@ public class RecipeMenu {
                 var recipe = plugin.getBlueprintRegistry().getBlueprintsFor(type.id()).getFirst();
                 if (recipe != null && (recipe.hasAccess(player) || !mcc.getSecretRecipeDisplay().getEnabled())) {
                     menu.addItem(ItemBuilder.item(item).amount(item.getAmount()).slot(slot).build(player), (e) -> {
-                        RecipeMenu.recipeMenu(plugin, player, recipe, () -> RecipeMenu.recipeMenu(plugin, player, this.blueprint, this.backAction).open()).open();
+                        BlueprintMenu.blueprintMenu(plugin, player, recipe, () -> BlueprintMenu.blueprintMenu(plugin, player, this.blueprint, this.backAction).open()).open();
                     });
                     continue;
                 }

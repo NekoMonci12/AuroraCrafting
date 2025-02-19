@@ -15,25 +15,25 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecipeCategoryMenu {
+public class BookBlueprintListMenu {
     private final AuroraCrafting plugin;
     private final Player player;
     private final BookCategory category;
     private int page = 0;
 
-    public RecipeCategoryMenu(AuroraCrafting plugin, Player player, BookCategory category, int page) {
+    public BookBlueprintListMenu(AuroraCrafting plugin, Player player, BookCategory category, int page) {
         this.plugin = plugin;
         this.player = player;
         this.category = category;
         this.page = page;
     }
 
-    public static RecipeCategoryMenu recipeCategoryMenu(AuroraCrafting plugin, Player player, BookCategory category) {
-        return new RecipeCategoryMenu(plugin, player, category, 0);
+    public static BookBlueprintListMenu bookBlueprintListMenu(AuroraCrafting plugin, Player player, BookCategory category) {
+        return new BookBlueprintListMenu(plugin, player, category, 0);
     }
 
-    public static RecipeCategoryMenu recipeCategoryMenu(AuroraCrafting plugin, Player player, BookCategory category, int page) {
-        return new RecipeCategoryMenu(plugin, player, category, page);
+    public static BookBlueprintListMenu bookBlueprintListMenu(AuroraCrafting plugin, Player player, BookCategory category, int page) {
+        return new BookBlueprintListMenu(plugin, player, category, page);
     }
 
     public void open() {
@@ -52,7 +52,7 @@ public class RecipeCategoryMenu {
         }
 
         menu.addItem(ItemBuilder.of(mc.getItems().get("back")).build(player), (e) -> {
-            RecipeBookMenu.recipeBookMenu(plugin, player).open();
+            BookCategoryListMenu.bookCategoryListMenu(plugin, player, category.getParent()).open();
         });
 
         var recipes = getPageRecipes(mc.getDisplayArea().size());
@@ -87,7 +87,7 @@ public class RecipeCategoryMenu {
                     }
 
                     menu.addItem(builder.build(player), (e) -> {
-                        RecipeMenu.recipeMenu(plugin, player, blueprint, () -> RecipeCategoryMenu.recipeCategoryMenu(plugin, player, category, page).open()).open();
+                        BlueprintMenu.blueprintMenu(plugin, player, blueprint, () -> BookBlueprintListMenu.bookBlueprintListMenu(plugin, player, category, page).open()).open();
                     });
                 } else {
                     menu.addItem(ItemBuilder.of(mc.getSecretRecipeDisplay().getItem()).slot(slot).loreCompute(() -> {

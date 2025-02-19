@@ -7,6 +7,7 @@ import gg.auroramc.aurora.api.message.Chat;
 import gg.auroramc.crafting.api.AuroraCraftingPlugin;
 import gg.auroramc.crafting.api.blueprint.BlueprintRegistry;
 import gg.auroramc.crafting.api.book.Book;
+import gg.auroramc.crafting.api.book.BookCategory;
 import gg.auroramc.crafting.api.event.PlayerCraftItemEvent;
 import gg.auroramc.crafting.api.event.RegistryLoadEvent;
 import gg.auroramc.crafting.api.event.RegistryLoadedEvent;
@@ -22,8 +23,8 @@ import gg.auroramc.crafting.loader.BookLoader;
 import gg.auroramc.crafting.loader.WorkbenchLoader;
 import gg.auroramc.crafting.menu.CraftMenu;
 import gg.auroramc.crafting.menu.MenuListener;
-import gg.auroramc.crafting.menu.RecipeBookMenu;
-import gg.auroramc.crafting.menu.RecipeMenu;
+import gg.auroramc.crafting.menu.BookCategoryListMenu;
+import gg.auroramc.crafting.menu.BlueprintMenu;
 import gg.auroramc.crafting.util.RecipeUtil;
 import lombok.Getter;
 import org.bstats.bukkit.Metrics;
@@ -50,12 +51,13 @@ public class AuroraCrafting extends AuroraCraftingPlugin {
         instance = this;
 
         AuroraCraftingPlugin.instance = this;
-        book = new Book();
-        workbenchRegistry = new WorkbenchRegistry();
 
         configManager = new ConfigManager(this);
         configManager.reload();
         l = AuroraAPI.createLogger("AuroraCrafting", () -> configManager.getConfig().getDebug());
+
+        book = new Book(BookCategory.MenuOptions.builder().title(configManager.getRecipeBookMenuConfig().getTitle()).build());
+        workbenchRegistry = new WorkbenchRegistry();
 
         HookManager.loadHooks(this);
     }
@@ -81,20 +83,20 @@ public class AuroraCrafting extends AuroraCraftingPlugin {
             var blueprint = blueprintRegistry.getBlueprint(recipeId);
             if (blueprint == null) return;
             if (split.length > 1) {
-                RecipeMenu.recipeMenu(this, player, blueprint, () -> CommandDispatcher.dispatch(player, split[1].trim())).open();
+                BlueprintMenu.blueprintMenu(this, player, blueprint, () -> CommandDispatcher.dispatch(player, split[1].trim())).open();
             } else {
-                RecipeMenu.recipeMenu(this, player, blueprint, null).open();
+                BlueprintMenu.blueprintMenu(this, player, blueprint, null).open();
             }
         });
 
         CommandDispatcher.registerActionHandler("recipes", (player, input) -> {
-            RecipeBookMenu.recipeBookMenu(this, player).open();
+            BookCategoryListMenu.bookCategoryListMenu(this, player, book).open();
         });
 
         CommandDispatcher.registerActionHandler("workbench", (player, input) -> {
             var workbenchId = input.trim();
             var workbench = workbenchRegistry.getWorkbench(workbenchId);
-            if(workbench == null) return;
+            if (workbench == null) return;
             if (player.hasPermission("aurora.crafting.use." + workbenchId)) {
                 CraftMenu.craftMenu(this, player, workbench).open();
             } else {
@@ -120,6 +122,7 @@ public class AuroraCrafting extends AuroraCraftingPlugin {
         // Initialize fields
         book.unfreezeAndClear();
         workbenchRegistry.unfreezeAndClear();
+        book.setMenuOptions(BookCategory.MenuOptions.builder().title(configManager.getRecipeBookMenuConfig().getTitle()).build());
         // Load everything from configs
         BookLoader.loadBookCategories(this);
         WorkbenchLoader.loadWorkbenches(this);
