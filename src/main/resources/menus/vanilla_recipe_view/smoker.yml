@@ -15,7 +15,7 @@ items:
     material: coal
   back:
     material: arrow
-    name: "&7Back"
+    name: "&fBack"
     slot: 27
     lore:
       - "&7Click to go back"
