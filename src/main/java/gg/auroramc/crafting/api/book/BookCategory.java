@@ -44,7 +44,7 @@ public class BookCategory {
         blueprints.add(blueprint);
     }
 
-    public Collection<BookCategory> getRegistry() {
+    public Collection<BookCategory> getCategories() {
         return categories.values();
     }
 

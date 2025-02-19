@@ -20,16 +20,16 @@ public class RecipeBookMenu {
 
     public void open() {
         var mc = plugin.getConfigManager().getRecipeBookMenuConfig();
-        var categories = plugin.getConfigManager().getRecipeBookConfig().getCategories();
+        var categories = plugin.getBook().getCategories();
 
         var menu = new AuroraMenu(player, mc.getTitle(), mc.getRows() * 9, false);
 
         menu.addFiller(ItemBuilder.of(mc.getFiller()).toItemStack(player));
 
         for (var category : categories) {
-            menu.addItem(ItemBuilder.of(category.getMenu().getItem())
+            menu.addItem(ItemBuilder.of(category.getMenuOptions().getItem())
                             .loreCompute(() -> {
-                                var lore = new ArrayList<>(category.getMenu().getItem().getLore());
+                                var lore = new ArrayList<>(category.getMenuOptions().getItem().getLore());
                                 lore.addAll(mc.getAppendLore());
                                 return lore.stream().map(l -> Text.component(player, l)).toList();
                             })

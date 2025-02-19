@@ -3,7 +3,8 @@ package gg.auroramc.crafting.menu;
 import gg.auroramc.aurora.api.menu.AuroraMenu;
 import gg.auroramc.aurora.api.menu.ItemBuilder;
 import gg.auroramc.crafting.AuroraCrafting;
-import gg.auroramc.crafting.api.AuroraRecipe;
+import gg.auroramc.crafting.api.blueprint.Blueprint;
+import gg.auroramc.crafting.api.workbench.custom.CustomWorkbench;
 import lombok.AllArgsConstructor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -12,33 +13,41 @@ import org.bukkit.inventory.ItemStack;
 public class RecipeMenu {
     private final AuroraCrafting plugin;
     private final Player player;
-    private final AuroraRecipe recipe;
+    private final Blueprint blueprint;
     private final Runnable backAction;
 
-    public static RecipeMenu recipeMenu(AuroraCrafting plugin, Player player, AuroraRecipe recipe, Runnable backAction) {
+    public static RecipeMenu recipeMenu(AuroraCrafting plugin, Player player, Blueprint recipe, Runnable backAction) {
         return new RecipeMenu(plugin, player, recipe, backAction);
     }
 
     public void open() {
-        var workbenchConfig = plugin.getWorkbenchRegistry().getWorkbench(recipe.getWorkbench());
+        var workbench = blueprint.getWorkbench();
+
+        if (workbench instanceof CustomWorkbench customWorkbench) {
+            open(customWorkbench);
+        }
+        // TODO: handle vanilla workbenches
+    }
+
+    private void open(CustomWorkbench workbench) {
         var mc = plugin.getConfigManager().getRecipeViewConfig();
         var mcc = plugin.getConfigManager().getRecipeBookCategoryConfig();
 
-        var menu = new AuroraMenu(player, mc.getTitle(), workbenchConfig.getMenuOptions().getRows() * 9, false);
-        menu.addFiller(ItemBuilder.of(workbenchConfig.getMenuOptions().getFillerItem()).toItemStack(player));
+        var menu = new AuroraMenu(player, mc.getTitle(), workbench.getMenuOptions().getRows() * 9, false);
+        menu.addFiller(ItemBuilder.of(workbench.getMenuOptions().getFillerItem()).toItemStack(player));
 
-        var ingredientItems = recipe.getIngredientItems();
-        var ingredientTypes = recipe.getIngredients();
+        var ingredientItems = blueprint.getIngredientItems();
+        var ingredientTypes = blueprint.getIngredients();
 
-        for (int i = 0; i < workbenchConfig.getMatrixSlots().size(); i++) {
-            var slot = workbenchConfig.getMatrixSlots().get(i);
+        for (int i = 0; i < workbench.getMatrixSlots().size(); i++) {
+            var slot = workbench.getMatrixSlots().get(i);
             var item = i < ingredientItems.size() ? ingredientItems.get(i) : ItemStack.empty();
             var type = i < ingredientTypes.size() ? ingredientTypes.get(i) : null;
             if (type != null) {
-                var recipe = plugin.getRecipeManager().getRecipeByResult(type.id());
-                if (recipe != null && (recipe.hasPermission(player) || !mcc.getSecretRecipeDisplay().getEnabled())) {
+                var recipe = plugin.getBlueprintRegistry().getBlueprintsFor(type.id()).getFirst();
+                if (recipe != null && (recipe.hasAccess(player) || !mcc.getSecretRecipeDisplay().getEnabled())) {
                     menu.addItem(ItemBuilder.item(item).amount(item.getAmount()).slot(slot).build(player), (e) -> {
-                        RecipeMenu.recipeMenu(plugin, player, recipe, () -> RecipeMenu.recipeMenu(plugin, player, this.recipe, this.backAction).open()).open();
+                        RecipeMenu.recipeMenu(plugin, player, recipe, () -> RecipeMenu.recipeMenu(plugin, player, this.blueprint, this.backAction).open()).open();
                     });
                     continue;
                 }
@@ -48,17 +57,17 @@ public class RecipeMenu {
         }
 
         Integer resultSlot;
-        resultSlot = mc.getResultSlot().get(recipe.getWorkbench());
+        resultSlot = mc.getResultSlot().get(blueprint.getWorkbench().getId());
         if (resultSlot == null) {
             resultSlot = mc.getResultSlot().get("default");
         }
         if (resultSlot == null) {
-            resultSlot = workbenchConfig.getResultSlot();
+            resultSlot = workbench.getResultSlot();
         }
 
-        menu.addItem(ItemBuilder.item(recipe.getResultItem()).amount(recipe.getResult().amount()).slot(resultSlot).build(player));
+        menu.addItem(ItemBuilder.item(blueprint.getResultItem()).amount(blueprint.getResult().amount()).slot(resultSlot).build(player));
 
-        if (backAction != null && recipe.getCategory() != null) {
+        if (backAction != null && blueprint.getCategory() != null) {
             menu.addItem(ItemBuilder.of(mc.getItems().get("back")).build(player), (e) -> {
                 backAction.run();
             });

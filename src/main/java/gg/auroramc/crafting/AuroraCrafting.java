@@ -5,7 +5,6 @@ import gg.auroramc.aurora.api.AuroraLogger;
 import gg.auroramc.aurora.api.command.CommandDispatcher;
 import gg.auroramc.aurora.api.message.Chat;
 import gg.auroramc.crafting.api.AuroraCraftingPlugin;
-import gg.auroramc.crafting.api.RecipeManager;
 import gg.auroramc.crafting.api.blueprint.BlueprintRegistry;
 import gg.auroramc.crafting.api.book.Book;
 import gg.auroramc.crafting.api.event.PlayerCraftItemEvent;
@@ -37,8 +36,6 @@ public class AuroraCrafting extends AuroraCraftingPlugin {
     private ConfigManager configManager;
 
     private CommandManager commandManager;
-    @Getter
-    private RecipeManager recipeManager;
 
     @Getter
     private static AuroraCrafting instance;
@@ -65,7 +62,6 @@ public class AuroraCrafting extends AuroraCraftingPlugin {
 
     @Override
     public void onEnable() {
-        recipeManager = new RecipeManager(this);
         commandManager = new CommandManager(this);
         commandManager.reload();
         Bukkit.getPluginManager().registerEvents(new MenuListener(this), this);
@@ -82,14 +78,12 @@ public class AuroraCrafting extends AuroraCraftingPlugin {
         CommandDispatcher.registerActionHandler("recipe", (player, input) -> {
             var split = input.split("---");
             var recipeId = split[0].trim();
-            var recipe = recipeManager.getRecipeById(recipeId);
-            if (recipe == null) return;
+            var blueprint = blueprintRegistry.getBlueprint(recipeId);
+            if (blueprint == null) return;
             if (split.length > 1) {
-                RecipeMenu.recipeMenu(this, player, recipe, () -> {
-                    CommandDispatcher.dispatch(player, split[1].trim());
-                }).open();
+                RecipeMenu.recipeMenu(this, player, blueprint, () -> CommandDispatcher.dispatch(player, split[1].trim())).open();
             } else {
-                RecipeMenu.recipeMenu(this, player, recipe, null).open();
+                RecipeMenu.recipeMenu(this, player, blueprint, null).open();
             }
         });
 

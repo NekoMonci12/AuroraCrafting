@@ -25,11 +25,11 @@ public class RecipesCommand extends BaseCommand {
             RecipeBookMenu.recipeBookMenu(plugin, player).open();
             return;
         }
-        var recipe = plugin.getRecipeManager().getRecipeById(recipeId);
-        if (recipe == null) return;
+        var blueprint = plugin.getBlueprintRegistry().getBlueprint(recipeId);
+        if (blueprint == null) return;
 
-        if (recipe.hasPermission(player) || !plugin.getConfigManager().getRecipeBookCategoryConfig().getSecretRecipeDisplay().getEnabled()) {
-            RecipeMenu.recipeMenu(plugin, player, recipe, () -> RecipeCategoryMenu.recipeCategoryMenu(plugin, player, recipe.getCategory()).open()).open();
+        if (blueprint.hasAccess(player) || !plugin.getConfigManager().getRecipeBookCategoryConfig().getSecretRecipeDisplay().getEnabled()) {
+            RecipeMenu.recipeMenu(plugin, player, blueprint, () -> RecipeCategoryMenu.recipeCategoryMenu(plugin, player, blueprint.getCategory().getFirst()).open()).open();
         }
     }
 }
