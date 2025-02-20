@@ -89,23 +89,37 @@ public class CraftingListener implements Listener {
             updateMatrix(player, craftingInventory, newMatrix);
             craftingInventory.setResult(result);
         } else {
-            event.setCancelled(true);
-            final var currentItem = event.getCurrentItem() != null ? event.getCurrentItem().clone() : ItemStack.empty();
+            // Let's see what can we do to not cancel the event
+            if (Math.floorDiv(blueprint.getResultItem().getMaxStackSize(), blueprint.getResult().amount()) >= timesCraftable) {
+                var currentResult = craftingInventory.getResult();
 
-            int currentSpace = InventoryUtils.calculateSpaceForItem(player.getInventory(), currentItem);
-            if (currentSpace < blueprint.getResult().amount()) {
-                return;
-            }
-            final int timesCrafted = Math.min((currentSpace / blueprint.getResult().amount()) + 1, timesCraftable);
+                updateMatrix(player, craftingInventory, blueprint.calcRemainingIngredientMatrix(context, timesCraftable));
 
-            if (timesCrafted == 1) {
-                updateMatrix(player, event.getInventory(), blueprint.calcRemainingIngredientMatrix(context, 1));
-                player.getInventory().addItem(currentItem);
+                if (currentResult != null) {
+                    currentResult.setAmount(currentResult.getAmount() * timesCraftable);
+                }
+
+                craftingInventory.setResult(currentResult);
             } else {
-                var amount = timesCrafted * blueprint.getResult().amount();
-                var stacks = ItemUtils.createStacksFromAmount(currentItem, amount);
-                player.getInventory().addItem(stacks);
-                updateMatrix(player, event.getInventory(), blueprint.calcRemainingIngredientMatrix(context, timesCrafted));
+                // Well, there is no more workarounds at this point. Just cancel and handle shift click crafting manually
+                event.setCancelled(true);
+                final var currentItem = event.getCurrentItem() != null ? event.getCurrentItem().clone() : ItemStack.empty();
+
+                int currentSpace = InventoryUtils.calculateSpaceForItem(player.getInventory(), currentItem);
+                if (currentSpace < blueprint.getResult().amount()) {
+                    return;
+                }
+                final int timesCrafted = Math.min((currentSpace / blueprint.getResult().amount()) + 1, timesCraftable);
+
+                if (timesCrafted == 1) {
+                    updateMatrix(player, event.getInventory(), blueprint.calcRemainingIngredientMatrix(context, 1));
+                    player.getInventory().addItem(currentItem);
+                } else {
+                    var amount = timesCrafted * blueprint.getResult().amount();
+                    var stacks = ItemUtils.createStacksFromAmount(currentItem, amount);
+                    player.getInventory().addItem(stacks);
+                    updateMatrix(player, event.getInventory(), blueprint.calcRemainingIngredientMatrix(context, timesCrafted));
+                }
             }
         }
 
