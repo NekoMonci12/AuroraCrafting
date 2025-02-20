@@ -17,7 +17,7 @@ public abstract class Workbench {
     @Getter
     private boolean frozen = false;
 
-    protected final Map<String, Blueprint> blueprints = new HashMap<>();
+    protected final Map<String, Blueprint> blueprints = new LinkedHashMap<>();
     protected final Map<BlueprintType, Map<String, Blueprint>> categorizedBlueprints = new HashMap<>();
     protected final Map<BlueprintType, Map<String, Blueprint>> matrixLookup = new HashMap<>();
     @Getter

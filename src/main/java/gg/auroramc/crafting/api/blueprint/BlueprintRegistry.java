@@ -11,7 +11,7 @@ public class BlueprintRegistry {
     private final Map<TypeId, List<Blueprint>> resultLookup;
 
     private BlueprintRegistry(Map<String, Blueprint> blueprints, Map<TypeId, List<Blueprint>> resultLookup) {
-        this.blueprints = Map.copyOf(blueprints);
+        this.blueprints = new LinkedHashMap<>(blueprints);
         this.resultLookup = Map.copyOf(resultLookup);
     }
 
@@ -36,7 +36,7 @@ public class BlueprintRegistry {
     }
 
     public static BlueprintRegistry createFrom(WorkbenchRegistry workbenchRegistry) {
-        Map<String, Blueprint> collectedBlueprints = new HashMap<>();
+        Map<String, Blueprint> collectedBlueprints = new LinkedHashMap<>();
         Map<TypeId, List<Blueprint>> resultLookupBlueprints = new HashMap<>();
 
         for (Workbench workbench : workbenchRegistry.getVanillaWorkbenches()) {
