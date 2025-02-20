@@ -29,7 +29,7 @@ public class RecipesCommand extends BaseCommand {
         if (blueprint == null) return;
 
         if (blueprint.hasAccess(player) || !plugin.getConfigManager().getRecipeBookCategoryConfig().getSecretRecipeDisplay().getEnabled()) {
-            BlueprintMenu.blueprintMenu(plugin, player, blueprint, () -> BookBlueprintListMenu.bookBlueprintListMenu(plugin, player, blueprint.getCategory().getFirst()).open()).open();
+            BlueprintMenu.blueprintMenu(plugin, player, blueprint, null).open();
         }
     }
 }
