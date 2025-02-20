@@ -75,9 +75,9 @@ public abstract class Blueprint {
         if (options.enchants) {
             for (var enchant : ingredient.getEnchantments().entrySet()) {
                 if (result.getEnchantments().containsKey(enchant.getKey())) {
-                    result.addEnchantment(enchant.getKey(), enchant.getValue() + result.getEnchantmentLevel(enchant.getKey()));
+                    result.addUnsafeEnchantment(enchant.getKey(), enchant.getValue() + result.getEnchantmentLevel(enchant.getKey()));
                 } else {
-                    result.addEnchantment(enchant.getKey(), enchant.getValue());
+                    result.addUnsafeEnchantment(enchant.getKey(), enchant.getValue());
                 }
             }
         }
