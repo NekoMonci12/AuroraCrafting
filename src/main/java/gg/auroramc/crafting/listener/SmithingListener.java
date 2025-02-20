@@ -3,13 +3,10 @@ package gg.auroramc.crafting.listener;
 import gg.auroramc.aurora.api.util.ItemUtils;
 import gg.auroramc.crafting.AuroraCrafting;
 import gg.auroramc.crafting.api.blueprint.BlueprintType;
-import gg.auroramc.crafting.api.event.RegistryLoadedEvent;
 import gg.auroramc.crafting.util.InventoryUtils;
-import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -18,16 +15,28 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.PrepareSmithingEvent;
 import org.bukkit.inventory.*;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-@RequiredArgsConstructor
 public class SmithingListener implements Listener {
     private final AuroraCrafting plugin;
-    private final Map<ItemStack, List<Recipe>> recipeCache = new HashMap<>(100);
     private final NamespacedKey smithingSoundKey = NamespacedKey.minecraft("block.smithing_table.use");
+    private final List<SmithingRecipeWrapper> vanillaRecipes = new ArrayList<>();
+
+    public SmithingListener(AuroraCrafting plugin) {
+        this.plugin = plugin;
+        for (@NotNull Iterator<Recipe> it = Bukkit.recipeIterator(); it.hasNext(); ) {
+            var recipe = it.next();
+            if (recipe instanceof SmithingTransformRecipe smithingRecipe) {
+                vanillaRecipes.add(new SmithingTransformRecipeWrapper(smithingRecipe));
+            } else if (recipe instanceof SmithingTrimRecipe smithingRecipe) {
+                vanillaRecipes.add(new SmithingTrimRecipeWrapper(smithingRecipe));
+            }
+        }
+    }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPrepareSmithing(PrepareSmithingEvent event) {
@@ -37,21 +46,13 @@ public class SmithingListener implements Listener {
         var context = workbench.createContext(player, event.getInventory());
         var blueprint = workbench.lookupBlueprint(context, BlueprintType.SMITHING);
 
-        boolean isAuroraRecipe = false;
-
-        if (event.getResult() != null) {
-            var recipes = recipeCache.computeIfAbsent(event.getResult(),
-                    (k) -> Bukkit.getRecipesFor(event.getResult()).stream().filter(r -> r instanceof SmithingRecipe).toList());
-            for (var r : recipes) {
-                if (((SmithingRecipe) r).getKey().getNamespace().equals("aurora")) {
-                    isAuroraRecipe = true;
-                    break;
-                }
-            }
-        }
-
         if (blueprint == null) {
-            if (isAuroraRecipe) {
+            var vanillaRecipe = getVanillaRecipe(event.getInventory());
+            if (vanillaRecipe != null) {
+                if (vanillaRecipe.getResult() != null && !vanillaRecipe.getResult().isEmpty()) {
+                    event.setResult(vanillaRecipe.getResult());
+                }
+            } else {
                 event.setResult(null);
             }
             return;
@@ -63,9 +64,7 @@ public class SmithingListener implements Listener {
         }
 
         if (blueprint.getTimesCraftable(context) <= 0) {
-            if (isAuroraRecipe) {
-                event.setResult(null);
-            }
+            event.setResult(null);
             return;
         }
 
@@ -143,11 +142,6 @@ public class SmithingListener implements Listener {
 
     }
 
-    @EventHandler
-    public void onRegistryReload(RegistryLoadedEvent event) {
-        recipeCache.clear();
-    }
-
     private void updateMatrix(Player player, Inventory inventory, ItemStack[] resultingMatrix) {
         var workbench = plugin.getWorkbenchRegistry().getSmithingTable();
         run(player, () -> {
@@ -161,5 +155,67 @@ public class SmithingListener implements Listener {
     private void run(Player player, Runnable runnable) {
         runnable.run();
         Bukkit.getRegionScheduler().run(plugin, player.getLocation(), (t) -> runnable.run());
+    }
+
+    private SmithingRecipeWrapper getVanillaRecipe(SmithingInventory inventory) {
+        for (var recipe : vanillaRecipes) {
+            if (recipe.matches(inventory)) {
+                return recipe;
+            }
+        }
+        return null;
+    }
+
+    public interface SmithingRecipeWrapper {
+        boolean matches(SmithingInventory inventory);
+
+        ItemStack getResult();
+    }
+
+    public static class SmithingTransformRecipeWrapper implements SmithingRecipeWrapper {
+        private final SmithingTransformRecipe recipe;
+
+        public SmithingTransformRecipeWrapper(SmithingTransformRecipe recipe) {
+            this.recipe = recipe;
+        }
+
+        @Override
+        public boolean matches(SmithingInventory inventory) {
+            return matchesChoice(recipe.getTemplate(), inventory.getItem(0)) &&
+                    matchesChoice(recipe.getBase(), inventory.getItem(1)) &&
+                    matchesChoice(recipe.getAddition(), inventory.getItem(2));
+        }
+
+        @Override
+        public ItemStack getResult() {
+            return recipe.getResult();
+        }
+    }
+
+    public static class SmithingTrimRecipeWrapper implements SmithingRecipeWrapper {
+        private final SmithingTrimRecipe recipe;
+
+        public SmithingTrimRecipeWrapper(SmithingTrimRecipe recipe) {
+            this.recipe = recipe;
+        }
+
+        @Override
+        public boolean matches(SmithingInventory inventory) {
+            return matchesChoice(recipe.getTemplate(), inventory.getItem(0)) &&
+                    matchesChoice(recipe.getBase(), inventory.getItem(1)) &&
+                    matchesChoice(recipe.getAddition(), inventory.getItem(2));
+        }
+
+        @Override
+        public ItemStack getResult() {
+            return null;
+        }
+    }
+
+    private static boolean matchesChoice(RecipeChoice choice, ItemStack item) {
+        if (choice == null || item == null) {
+            return false;
+        }
+        return choice.test(item);
     }
 }
