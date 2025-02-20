@@ -28,7 +28,7 @@ repositories {
         dirs("libs")
     }
     mavenCentral()
-    maven("https://papermc.io/repo/repository/maven-public/")
+    maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.auroramc.gg/repository/maven-public/")
     maven("https://repo.aikar.co/content/groups/aikar/")
     // Quests (pikamug)
