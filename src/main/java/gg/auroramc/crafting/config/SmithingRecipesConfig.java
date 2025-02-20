@@ -61,7 +61,7 @@ public class SmithingRecipesConfig extends AuroraConfig {
         var target = "blueprints" + File.separator;
         var absPath = file.getAbsolutePath();
         var index = absPath.indexOf(target);
-        this.sourcePath = absPath.substring(index + target.length()).replace(".yml", "");
+        this.sourcePath = absPath.substring(index + target.length()).replace(".yml", "").replace(File.separator, "/");
     }
 
     @Override
