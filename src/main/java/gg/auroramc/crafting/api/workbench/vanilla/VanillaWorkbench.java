@@ -4,12 +4,15 @@ import gg.auroramc.crafting.AuroraCrafting;
 import gg.auroramc.crafting.api.blueprint.Blueprint;
 import gg.auroramc.crafting.api.blueprint.BlueprintAdapter;
 import gg.auroramc.crafting.api.blueprint.BlueprintContext;
+import gg.auroramc.crafting.api.blueprint.CraftingBlueprint;
 import gg.auroramc.crafting.api.workbench.Workbench;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
@@ -42,10 +45,21 @@ public class VanillaWorkbench<T extends Blueprint> extends Workbench {
         int count = 0;
         for (var blueprint : getBlueprints(type.getBlueprintTypes())) {
             var recipe = BlueprintAdapter.adapt(blueprint);
+            Recipe vanillaVariant = null;
+
+            if (blueprint instanceof CraftingBlueprint<?>) {
+                vanillaVariant = Bukkit.getCraftingRecipe(blueprint.getIngredientItems().toArray(new ItemStack[0]), Bukkit.getWorlds().getFirst());
+            }
+
             var success = Bukkit.addRecipe(recipe);
+
             if (success) {
                 registeredRecipes.add(((Keyed) recipe).getKey());
                 count++;
+                if (vanillaVariant instanceof Keyed keyed) {
+                    Bukkit.removeRecipe(keyed.getKey());
+                    Bukkit.addRecipe(vanillaVariant);
+                }
             }
         }
         AuroraCrafting.logger().info("Registered " + count + " recipes for workbench: " + id);

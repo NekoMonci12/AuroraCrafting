@@ -124,6 +124,8 @@ public class AuroraCrafting extends AuroraCraftingPlugin {
     }
 
     private void initState() {
+        // Disable vanilla recipes based on config
+        RecipeUtil.removeVanillaRecipes(configManager.getDisabledRecipesConfig().getRecipes());
         // Initialize fields
         book.unfreezeAndClear();
         workbenchRegistry.unfreezeAndClear();
@@ -144,8 +146,6 @@ public class AuroraCrafting extends AuroraCraftingPlugin {
         book.freeze();
         // Fire RegistryLoadedEvent to notify API users that the registry is now frozen
         Bukkit.getPluginManager().callEvent(new RegistryLoadedEvent());
-        // Disable vanilla recipes based on config
-        RecipeUtil.removeVanillaRecipes(configManager.getDisabledRecipesConfig().getRecipes());
     }
 
     public void callCraftEvent(Player player, ItemStack item, int amount) {

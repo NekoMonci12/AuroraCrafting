@@ -4,7 +4,6 @@ import gg.auroramc.aurora.api.util.ItemUtils;
 import gg.auroramc.crafting.AuroraCrafting;
 import gg.auroramc.crafting.api.blueprint.BlueprintType;
 import gg.auroramc.crafting.util.InventoryUtils;
-import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,9 +16,12 @@ import org.bukkit.inventory.CraftingRecipe;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-@RequiredArgsConstructor
 public class CraftingListener implements Listener {
     private final AuroraCrafting plugin;
+
+    public CraftingListener(AuroraCrafting plugin) {
+        this.plugin = plugin;
+    }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPrepareCrafting(PrepareItemCraftEvent event) {
