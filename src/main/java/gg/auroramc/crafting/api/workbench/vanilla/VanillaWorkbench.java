@@ -1,10 +1,7 @@
 package gg.auroramc.crafting.api.workbench.vanilla;
 
 import gg.auroramc.crafting.AuroraCrafting;
-import gg.auroramc.crafting.api.blueprint.Blueprint;
-import gg.auroramc.crafting.api.blueprint.BlueprintAdapter;
-import gg.auroramc.crafting.api.blueprint.BlueprintContext;
-import gg.auroramc.crafting.api.blueprint.CraftingBlueprint;
+import gg.auroramc.crafting.api.blueprint.*;
 import gg.auroramc.crafting.api.workbench.Workbench;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -47,8 +44,10 @@ public class VanillaWorkbench<T extends Blueprint> extends Workbench {
             var recipe = BlueprintAdapter.adapt(blueprint);
             Recipe vanillaVariant = null;
 
-            if (blueprint instanceof CraftingBlueprint<?>) {
-                vanillaVariant = Bukkit.getCraftingRecipe(blueprint.getIngredientItems().toArray(new ItemStack[0]), Bukkit.getWorlds().getFirst());
+            if (blueprint instanceof CraftingBlueprint<?> craftingBlueprint) {
+                if (craftingBlueprint.getVanillaOptions().getChoiceType() == ChoiceType.ITEM_TYPE) {
+                    vanillaVariant = Bukkit.getCraftingRecipe(blueprint.getIngredientItems().toArray(new ItemStack[0]), Bukkit.getWorlds().getFirst());
+                }
             }
 
             var success = Bukkit.addRecipe(recipe);
@@ -56,6 +55,8 @@ public class VanillaWorkbench<T extends Blueprint> extends Workbench {
             if (success) {
                 registeredRecipes.add(((Keyed) recipe).getKey());
                 count++;
+                // As dumb as it seems, we need to remove the vanilla recipe and re-add it to make sure it's the last one.
+                // Otherwise, users with overlapping recipes couldn't craft vanilla recipes with vanilla ingredients.
                 if (vanillaVariant instanceof Keyed keyed) {
                     Bukkit.removeRecipe(keyed.getKey());
                     Bukkit.addRecipe(vanillaVariant);
