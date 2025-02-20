@@ -35,7 +35,11 @@ public class BlueprintParser {
         ChoiceType choiceType;
 
         try {
-            vanillaCategory = CraftingBookCategory.valueOf(config.getVanillaOptions().getCategory().toUpperCase());
+            if (config.getVanillaOptions().getCategory() == null) {
+                vanillaCategory = CraftingBookCategory.MISC;
+            } else {
+                vanillaCategory = CraftingBookCategory.valueOf(config.getVanillaOptions().getCategory().toUpperCase());
+            }
         } catch (IllegalArgumentException e) {
             vanillaCategory = CraftingBookCategory.MISC;
             AuroraCrafting.logger().warning("Invalid cooking category: " + config.getVanillaOptions().getCategory() + " in recipe: " + recipeId);
@@ -93,7 +97,11 @@ public class BlueprintParser {
         CookingBookCategory vanillaCategory;
 
         try {
-            vanillaCategory = CookingBookCategory.valueOf(config.getCategory().toUpperCase());
+            if (config.getCategory() == null) {
+                vanillaCategory = CookingBookCategory.MISC;
+            } else {
+                vanillaCategory = CookingBookCategory.valueOf(config.getCategory().toUpperCase());
+            }
         } catch (IllegalArgumentException e) {
             vanillaCategory = CookingBookCategory.MISC;
             AuroraCrafting.logger().warning("Invalid cooking category: " + config.getCategory() + " in recipe: " + recipeId);

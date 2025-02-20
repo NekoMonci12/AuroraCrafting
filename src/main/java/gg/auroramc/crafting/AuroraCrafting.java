@@ -24,6 +24,7 @@ import gg.auroramc.crafting.menu.CraftMenu;
 import gg.auroramc.crafting.menu.MenuListener;
 import gg.auroramc.crafting.menu.BookCategoryListMenu;
 import gg.auroramc.crafting.menu.BlueprintMenu;
+import gg.auroramc.crafting.util.RecipeFolderMigrator;
 import gg.auroramc.crafting.util.RecipeUtil;
 import lombok.Getter;
 import org.bstats.bukkit.Metrics;
@@ -47,8 +48,9 @@ public class AuroraCrafting extends AuroraCraftingPlugin {
 
     @Override
     public void onLoad() {
-        instance = this;
+        RecipeFolderMigrator.tryMigrate(this);
 
+        instance = this;
         AuroraCraftingPlugin.instance = this;
 
         configManager = new ConfigManager(this);

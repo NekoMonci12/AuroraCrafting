@@ -137,8 +137,8 @@ public class ConfigManager {
 
         workbenchConfig = loadWorkBenches();
 
-        customRecipes = getCraftingRecipesConfigs("blueprints/aurora");
-        craftingTableRecipes = getCraftingRecipesConfigs("blueprints/vanilla/crafting_table");
+        customRecipes = getCraftingRecipesConfigs("blueprints/aurora", false);
+        craftingTableRecipes = getCraftingRecipesConfigs("blueprints/vanilla/crafting_table", true);
 
         blastingRecipes = getCookingRecipesConfigs("blueprints/vanilla/blast_furnace").stream()
                 .flatMap(recipesConfig -> recipesConfig.getRecipes().stream())
@@ -240,7 +240,7 @@ public class ConfigManager {
         return workbenchConfig;
     }
 
-    private List<CraftingRecipesConfig> getCraftingRecipesConfigs(String basePath) {
+    private List<CraftingRecipesConfig> getCraftingRecipesConfigs(String basePath, boolean vanilla) {
         Path recipesFolder = Path.of(plugin.getDataFolder().getPath(), basePath);
 
         if (Files.notExists(recipesFolder)) {
@@ -263,7 +263,7 @@ public class ConfigManager {
 
             for (var file : fileList) {
                 try {
-                    CraftingRecipesConfig recipesConfig = new CraftingRecipesConfig(file);
+                    CraftingRecipesConfig recipesConfig = new CraftingRecipesConfig(file, vanilla);
                     recipesConfig.load();
                     recipes.add(recipesConfig);
                 } catch (Exception e) {

@@ -19,13 +19,16 @@ public class CraftingRecipesConfig extends AuroraConfig {
     @IgnoreField
     private String sourcePath;
 
+    @IgnoreField
+    private boolean vanilla;
+
     private List<RecipeConfig> recipes = new ArrayList<>();
 
     @Getter
     public static final class RecipeConfig {
         private String id;
         private String permission;
-        private String workbench;
+        private String workbench = "default";
         private Boolean shapeless = false;
         private Boolean symmetry = false;
         private String result;
@@ -61,8 +64,9 @@ public class CraftingRecipesConfig extends AuroraConfig {
         private List<String> lockedLore = new ArrayList<>();
     }
 
-    public CraftingRecipesConfig(File file) {
+    public CraftingRecipesConfig(File file, boolean vanilla) {
         super(file);
+        this.vanilla = vanilla;
         var target = "blueprints" + File.separator;
         var absPath = file.getAbsolutePath();
         var index = absPath.indexOf(target);
@@ -76,7 +80,7 @@ public class CraftingRecipesConfig extends AuroraConfig {
             recipe.setSourcePath(sourcePath);
             var matrix = AuroraCrafting.getInstance().getConfigManager().getWorkbenchConfig().stream().filter(w -> w.getId().equals(recipe.getWorkbench())).findFirst();
             int matrixSize = 9;
-            if (matrix.isPresent()) {
+            if (matrix.isPresent() && !vanilla) {
                 matrixSize = matrix.get().getMatrixSlots().size();
             }
             if (recipe.getIngredients().size() < matrixSize) {

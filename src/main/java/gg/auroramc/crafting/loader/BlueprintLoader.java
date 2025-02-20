@@ -37,7 +37,7 @@ public class BlueprintLoader {
                     }
                     duplicates.computeIfAbsent(recipe.getId(), k -> new ArrayList<>()).add(recipe.getSourcePath());
                 } catch (Exception e) {
-                    AuroraCrafting.logger().severe("Failed to load blueprint " + recipe.getId() + " in source: " + recipe.getSourcePath() + ", reason:" + e.getMessage());
+                    AuroraCrafting.logger().severe("Failed to load blueprint " + recipe.getId() + " in source: " + recipe.getSourcePath() + ", reason: " + e.getMessage());
                 }
             }
         }
@@ -60,7 +60,7 @@ public class BlueprintLoader {
                     }
                     duplicates.computeIfAbsent(recipe.getId(), k -> new ArrayList<>()).add(recipe.getSourcePath());
                 } catch (Exception e) {
-                    AuroraCrafting.logger().severe("Failed to load blueprint " + recipe.getId() + " in source: " + recipe.getSourcePath() + ", reason:" + e.getMessage());
+                    AuroraCrafting.logger().severe("Failed to load blueprint " + recipe.getId() + " in source: " + recipe.getSourcePath() + ", reason: " + e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -78,7 +78,7 @@ public class BlueprintLoader {
                 workbench.addBlueprint(BlueprintType.SMITHING, blueprint);
                 duplicates.computeIfAbsent(recipe.getId(), k -> new ArrayList<>()).add(recipe.getSourcePath());
             } catch (Exception e) {
-                AuroraCrafting.logger().severe("Failed to load blueprint " + recipe.getId() + " in source: " + recipe.getSourcePath() + ", reason:" + e.getMessage());
+                AuroraCrafting.logger().severe("Failed to load blueprint " + recipe.getId() + " in source: " + recipe.getSourcePath() + ", reason: " + e.getMessage());
             }
         }
 
@@ -94,7 +94,7 @@ public class BlueprintLoader {
                 workbench.addBlueprint(BlueprintType.FURNACE, blueprint);
                 duplicates.computeIfAbsent(recipe.getId(), k -> new ArrayList<>()).add(recipe.getSourcePath());
             } catch (Exception e) {
-                AuroraCrafting.logger().severe("Failed to load blueprint " + recipe.getId() + " in source: " + recipe.getSourcePath() + ", reason:" + e.getMessage());
+                AuroraCrafting.logger().severe("Failed to load blueprint " + recipe.getId() + " in source: " + recipe.getSourcePath() + ", reason: " + e.getMessage());
             }
         }
 
@@ -110,7 +110,7 @@ public class BlueprintLoader {
                 workbench.addBlueprint(BlueprintType.BLASTING, blueprint);
                 duplicates.computeIfAbsent(recipe.getId(), k -> new ArrayList<>()).add(recipe.getSourcePath());
             } catch (Exception e) {
-                AuroraCrafting.logger().severe("Failed to load blueprint " + recipe.getId() + " in source: " + recipe.getSourcePath() + ", reason:" + e.getMessage());
+                AuroraCrafting.logger().severe("Failed to load blueprint " + recipe.getId() + " in source: " + recipe.getSourcePath() + ", reason: " + e.getMessage());
             }
         }
 
@@ -126,7 +126,7 @@ public class BlueprintLoader {
                 workbench.addBlueprint(BlueprintType.SMOKER, blueprint);
                 duplicates.computeIfAbsent(recipe.getId(), k -> new ArrayList<>()).add(recipe.getSourcePath());
             } catch (Exception e) {
-                AuroraCrafting.logger().severe("Failed to load blueprint " + recipe.getId() + " in source: " + recipe.getSourcePath() + ", reason:" + e.getMessage());
+                AuroraCrafting.logger().severe("Failed to load blueprint " + recipe.getId() + " in source: " + recipe.getSourcePath() + ", reason: " + e.getMessage());
             }
         }
 
@@ -142,7 +142,7 @@ public class BlueprintLoader {
                 workbench.addBlueprint(BlueprintType.CAMPFIRE, blueprint);
                 duplicates.computeIfAbsent(recipe.getId(), k -> new ArrayList<>()).add(recipe.getSourcePath());
             } catch (Exception e) {
-                AuroraCrafting.logger().severe("Failed to load blueprint " + recipe.getId() + " in source: " + recipe.getSourcePath() + ", reason:" + e.getMessage());
+                AuroraCrafting.logger().severe("Failed to load blueprint " + recipe.getId() + " in source: " + recipe.getSourcePath() + ", reason: " + e.getMessage());
             }
         }
     }
