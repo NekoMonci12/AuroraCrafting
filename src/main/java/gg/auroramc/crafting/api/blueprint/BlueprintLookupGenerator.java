@@ -35,7 +35,7 @@ public class BlueprintLookupGenerator {
         var key = new StringBuilder();
 
         for (var ingredient : blueprint.getIngredients()) {
-            key.append(ingredient.id().toString());
+            key.append(ingredient.getItemPair().id().toString());
             key.append(";");
         }
 
@@ -46,7 +46,7 @@ public class BlueprintLookupGenerator {
         var key = new StringBuilder();
 
         for (var ingredient : blueprint.getIngredients()) {
-            key.append(ingredient.id().toString());
+            key.append(ingredient.getItemPair().id().toString());
             key.append(";");
         }
 
@@ -54,7 +54,7 @@ public class BlueprintLookupGenerator {
     }
 
     public static String toKey(CookingBlueprint cookingBlueprint) {
-        return cookingBlueprint.getIngredients().getFirst().id().toString();
+        return cookingBlueprint.getIngredients().getFirst().getItemPair().id().toString();
     }
 
     /**
@@ -66,10 +66,10 @@ public class BlueprintLookupGenerator {
     public static String toKey(ShapelessBlueprint blueprint) {
         var key = new StringBuilder();
         var ingredients = new ArrayList<>(blueprint.getIngredients());
-        ingredients.sort(Comparator.comparing(a -> a.id().toString()));
+        ingredients.sort(Comparator.comparing(a -> a.getItemPair().id().toString()));
 
         for (var ingredient : ingredients) {
-            key.append(ingredient.id().toString());
+            key.append(ingredient.getItemPair().id().toString());
             key.append(";");
         }
 

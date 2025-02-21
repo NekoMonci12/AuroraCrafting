@@ -54,7 +54,7 @@ public class BlueprintMenu {
         menu.addItem(ItemBuilder.item(blueprint.getResultItem()).slot(config.getSlots().getResult()).build(player));
 
         var input = ItemBuilder.item(blueprint.getIngredientItems().getFirst()).slot(config.getSlots().getInput()).build(player);
-        var recipe = plugin.getBlueprintRegistry().getBlueprintFor(blueprint.getIngredients().getFirst().id());
+        var recipe = plugin.getBlueprintRegistry().getBlueprintFor(blueprint.getIngredients().getFirst().getItemPair().id());
 
         if (recipe != null) {
             menu.addItem(input, (e) -> {
@@ -87,7 +87,7 @@ public class BlueprintMenu {
         menu.addItem(ItemBuilder.item(blueprint.getResultItem()).slot(config.getSlots().getResult()).build(player));
 
         var input = ItemBuilder.item(blueprint.getIngredientItems().getFirst()).slot(config.getSlots().getInput()).build(player);
-        var recipe = plugin.getBlueprintRegistry().getBlueprintFor(blueprint.getIngredients().getFirst().id());
+        var recipe = plugin.getBlueprintRegistry().getBlueprintFor(blueprint.getIngredients().getFirst().getItemPair().id());
 
         if (recipe != null) {
             menu.addItem(input, (e) -> {
@@ -120,7 +120,7 @@ public class BlueprintMenu {
         menu.addItem(ItemBuilder.item(blueprint.getResultItem()).slot(config.getSlots().getResult()).build(player));
 
         var input = ItemBuilder.item(blueprint.getIngredientItems().getFirst()).slot(config.getSlots().getInput()).build(player);
-        var recipe = plugin.getBlueprintRegistry().getBlueprintFor(blueprint.getIngredients().getFirst().id());
+        var recipe = plugin.getBlueprintRegistry().getBlueprintFor(blueprint.getIngredients().getFirst().getItemPair().id());
 
         if (recipe != null) {
             menu.addItem(input, (e) -> {
@@ -152,7 +152,7 @@ public class BlueprintMenu {
         menu.addItem(ItemBuilder.item(blueprint.getResultItem()).slot(config.getSlots().getResult()).build(player));
 
         var input = ItemBuilder.item(blueprint.getIngredientItems().getFirst()).slot(config.getSlots().getInput()).build(player);
-        var recipe = plugin.getBlueprintRegistry().getBlueprintFor(blueprint.getIngredients().getFirst().id());
+        var recipe = plugin.getBlueprintRegistry().getBlueprintFor(blueprint.getIngredients().getFirst().getItemPair().id());
 
         if (recipe != null) {
             menu.addItem(input, (e) -> {
@@ -183,8 +183,8 @@ public class BlueprintMenu {
 
         menu.addItem(ItemBuilder.item(blueprint.getResultItem()).amount(blueprint.getResult().amount()).slot(config.getSlots().getResult()).build(player));
 
-        var template = ItemBuilder.item(blueprint.getIngredientItems().get(0)).amount(blueprint.getIngredients().get(0).amount()).slot(config.getSlots().getTemplate()).build(player);
-        var templateRecipe = plugin.getBlueprintRegistry().getBlueprintFor(blueprint.getIngredients().get(0).id());
+        var template = ItemBuilder.item(blueprint.getIngredientItems().get(0)).amount(blueprint.getIngredients().get(0).getItemPair().amount()).slot(config.getSlots().getTemplate()).build(player);
+        var templateRecipe = plugin.getBlueprintRegistry().getBlueprintFor(blueprint.getIngredients().get(0).getItemPair().id());
 
         if (templateRecipe != null) {
             menu.addItem(template, (e) -> {
@@ -194,8 +194,8 @@ public class BlueprintMenu {
             menu.addItem(template);
         }
 
-        var base = ItemBuilder.item(blueprint.getIngredientItems().get(1)).amount(blueprint.getIngredients().get(1).amount()).slot(config.getSlots().getBase()).build(player);
-        var baseRecipe = plugin.getBlueprintRegistry().getBlueprintFor(blueprint.getIngredients().get(1).id());
+        var base = ItemBuilder.item(blueprint.getIngredientItems().get(1)).amount(blueprint.getIngredients().get(1).getItemPair().amount()).slot(config.getSlots().getBase()).build(player);
+        var baseRecipe = plugin.getBlueprintRegistry().getBlueprintFor(blueprint.getIngredients().get(1).getItemPair().id());
 
         if (baseRecipe != null) {
             menu.addItem(base, (e) -> {
@@ -205,8 +205,8 @@ public class BlueprintMenu {
             menu.addItem(base);
         }
 
-        var addition = ItemBuilder.item(blueprint.getIngredientItems().get(2)).amount(blueprint.getIngredients().get(2).amount()).slot(config.getSlots().getAddition()).build(player);
-        var additionRecipe = plugin.getBlueprintRegistry().getBlueprintFor(blueprint.getIngredients().get(2).id());
+        var addition = ItemBuilder.item(blueprint.getIngredientItems().get(2)).amount(blueprint.getIngredients().get(2).getItemPair().amount()).slot(config.getSlots().getAddition()).build(player);
+        var additionRecipe = plugin.getBlueprintRegistry().getBlueprintFor(blueprint.getIngredients().get(2).getItemPair().id());
 
         if (additionRecipe != null) {
             menu.addItem(addition, (e) -> {
@@ -239,8 +239,8 @@ public class BlueprintMenu {
 
         for (int i = 0; i < 9; i++) {
             var slot = config.getSlots().getMatrix().get(i);
-            var item = ItemBuilder.item(blueprint.getIngredientItems().get(i)).amount(blueprint.getIngredients().get(i).amount()).slot(slot).build(player);
-            var type = blueprint.getIngredients().get(i).id();
+            var item = ItemBuilder.item(blueprint.getIngredientItems().get(i)).amount(blueprint.getIngredients().get(i).getItemPair().amount()).slot(slot).build(player);
+            var type = blueprint.getIngredients().get(i).getItemPair().id();
             var recipe = plugin.getBlueprintRegistry().getBlueprintFor(type);
 
             if (recipe != null) {
@@ -275,7 +275,7 @@ public class BlueprintMenu {
             var item = i < ingredientItems.size() ? ingredientItems.get(i) : ItemStack.empty();
             var type = i < ingredientTypes.size() ? ingredientTypes.get(i) : null;
             if (type != null) {
-                var recipe = plugin.getBlueprintRegistry().getBlueprintFor(type.id());
+                var recipe = plugin.getBlueprintRegistry().getBlueprintFor(type.getItemPair().id());
                 if (recipe != null && (recipe.hasAccess(player) || !mcc.getSecretRecipeDisplay().getEnabled())) {
                     menu.addItem(ItemBuilder.item(item).amount(item.getAmount()).slot(slot).build(player), (e) -> {
                         BlueprintMenu.blueprintMenu(plugin, player, recipe, () -> BlueprintMenu.blueprintMenu(plugin, player, this.blueprint, this.backAction).open()).open();

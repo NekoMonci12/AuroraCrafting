@@ -27,6 +27,6 @@ public class SmithingTable extends VanillaWorkbench<SmithingBlueprint> {
     }
 
     public boolean matchesRegisteredVanillaRecipe(BlueprintContext context) {
-        return vanillaLookup.containsKey(BlueprintLookupGenerator.toShapedKey(context.getIdMatrix()));
+        return vanillaLookup.containsKey(context.getShapedLookupKey());
     }
 }

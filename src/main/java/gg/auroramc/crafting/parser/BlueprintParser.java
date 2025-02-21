@@ -57,7 +57,7 @@ public class BlueprintParser {
         if (config.getShapeless()) {
             blueprint = ShapelessBlueprint.shapelessBlueprint(workbench, config.getId());
         } else {
-            blueprint = ShapedBlueprint.shapedBlueprint(workbench, config.getId()).symmetry(config.getSymmetry());
+            blueprint = ShapedBlueprint.shapedBlueprint(workbench, config.getId()).symmetrical(config.getSymmetry());
         }
 
         var ret = blueprint.vanillaOptions(CraftingBlueprint.VanillaOptions.builder()

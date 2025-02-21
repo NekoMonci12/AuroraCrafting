@@ -85,12 +85,10 @@ public abstract class Workbench {
             if (lookup == null) continue;
 
             if (type == BlueprintType.SHAPELESS) {
-                var shapelessKey = BlueprintLookupGenerator.toShapelessKey(context.getIdMatrix());
-                var res = lookup.get(shapelessKey);
+                var res = lookup.get(context.getShapelessLookupKey());
                 if (res != null) return res;
             } else {
-                var shapedKey = BlueprintLookupGenerator.toShapedKey(context.getIdMatrix());
-                var res = lookup.get(shapedKey);
+                var res = lookup.get(context.getShapedLookupKey());
                 if (res != null) return res;
             }
         }
