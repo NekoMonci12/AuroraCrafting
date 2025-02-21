@@ -34,7 +34,7 @@ public abstract class Blueprint {
     protected final Workbench workbench;
     protected DisplayOptions displayOptions;
     protected boolean mergeOptionsEnabled = false;
-    protected Integer resultIngredientIndex = null;
+    protected boolean ingredientAsResult = false;
     protected final List<TriConsumer<Player, ItemStack, Integer>> craftActions = new ArrayList<>();
     protected final List<Ingredient> ingredients = new ArrayList<>();
     protected final List<ItemStack> ingredientItems = new ArrayList<>();
@@ -57,8 +57,22 @@ public abstract class Blueprint {
             return resultItem.clone();
         }
 
-        var result = resultIngredientIndex != null ? context.getMatrix()[resultIngredientIndex].clone() : resultItem.clone();
         var matchedIngredients = getMatchedIngredientList(context);
+
+        ItemStack result;
+
+        if (ingredientAsResult) {
+            int index = 0;
+            for (int i = 0; i < matchedIngredients.size(); i++) {
+                if (matchedIngredients.get(i).isResult()) {
+                    index = i;
+                    break;
+                }
+            }
+            result = context.getMatrix()[index].clone();
+        } else {
+            result = resultItem.clone();
+        }
 
         for (int i = 0; i < context.getMatrix().length; i++) {
             var ingredient = context.getMatrix()[i];
@@ -175,9 +189,13 @@ public abstract class Blueprint {
         if (ingredientItems.get(index).isEmpty()) {
             throw new IllegalArgumentException("Invalid ingredient index: " + index + " for blueprint: " + id + ". Ingredient is empty/air.");
         }
+        if (ingredientAsResult) {
+            throw new IllegalArgumentException("Another ingredient is already set as result." + " for blueprint: " + id);
+        }
+        ingredients.get(index).setResult(true);
         this.result = ingredients.get(index).getItemPair();
         this.resultItem = ingredientItems.get(index).clone();
-        this.resultIngredientIndex = index;
+        this.ingredientAsResult = true;
         return this;
     }
 
@@ -464,5 +482,6 @@ public abstract class Blueprint {
     public static class Ingredient {
         private final ItemPair itemPair;
         private MergeOptions mergeOptions;
+        private boolean result;
     }
 }
