@@ -100,7 +100,14 @@ public abstract class Blueprint {
         if (options.enchants) {
             for (var enchant : ingredientMeta.getEnchants().entrySet()) {
                 if (resultMeta.getEnchants().containsKey(enchant.getKey())) {
-                    resultMeta.addEnchant(enchant.getKey(), enchant.getValue() + resultMeta.getEnchantLevel(enchant.getKey()), true);
+                    var currentLevel = resultMeta.getEnchantLevel(enchant.getKey());
+                    var otherLevel = enchant.getValue();
+                    resultMeta.removeEnchant(enchant.getKey());
+                    if (currentLevel == otherLevel) {
+                        resultMeta.addEnchant(enchant.getKey(), Math.min(currentLevel + 1, enchant.getKey().getMaxLevel()), true);
+                    } else {
+                        resultMeta.addEnchant(enchant.getKey(), Math.max(currentLevel, otherLevel), true);
+                    }
                 } else {
                     resultMeta.addEnchant(enchant.getKey(), enchant.getValue(), true);
                 }
@@ -121,15 +128,16 @@ public abstract class Blueprint {
 
         if (options.mergeDurability || options.restoreDurability != null) {
             if (options.restoreDurability != null) {
-                if (result.getItemMeta() instanceof Damageable damageable && damageable.hasDamage()) {
+                if (result.getItemMeta() instanceof Damageable d && d.hasDamage()) {
+                    var damageable = (Damageable) resultMeta;
                     damageable.setDamage(Math.max(damageable.getDamage() - options.getRestoreDurability(), 0));
                     if (!damageable.hasDamage() && Version.isAtLeastVersion(21)) {
                         damageable.resetDamage();
                     }
-                    resultMeta = damageable;
                 }
             } else {
-                if (result.getItemMeta() instanceof Damageable resultDamageable && resultDamageable.hasDamage()) {
+                if (result.getItemMeta() instanceof Damageable r && r.hasDamage()) {
+                    var resultDamageable = (Damageable) resultMeta;
                     if (ingredient.getItemMeta() instanceof Damageable ingredientDamageable) {
                         var restoreDurability = 0;
 
@@ -147,7 +155,6 @@ public abstract class Blueprint {
                         if (!resultDamageable.hasDamage() && Version.isAtLeastVersion(21)) {
                             resultDamageable.resetDamage();
                         }
-                        resultMeta = resultDamageable;
                     }
                 }
             }
