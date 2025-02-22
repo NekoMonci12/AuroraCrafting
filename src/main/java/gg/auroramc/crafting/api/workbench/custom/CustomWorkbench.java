@@ -1,5 +1,6 @@
 package gg.auroramc.crafting.api.workbench.custom;
 
+import gg.auroramc.crafting.AuroraCrafting;
 import gg.auroramc.crafting.api.blueprint.Blueprint;
 import gg.auroramc.crafting.api.blueprint.BlueprintType;
 import gg.auroramc.crafting.api.workbench.Workbench;
@@ -64,6 +65,12 @@ public class CustomWorkbench extends Workbench {
 
     public void setMenuOptions(MenuOptions menuOptions) {
         this.menuOptions = menuOptions.clone().setDefaults().validate();
+    }
+
+    @Override
+    public void freeze() {
+        super.freeze();
+        AuroraCrafting.logger().info("Registered " + blueprints.size() + " recipes for workbench: " + id);
     }
 
     public static Builder builder() {

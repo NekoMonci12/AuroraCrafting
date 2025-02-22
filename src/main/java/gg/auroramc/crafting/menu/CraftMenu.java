@@ -540,11 +540,7 @@ public class CraftMenu implements InventoryHolder {
     private void setInvalidResult() {
         inventory.setItem(resultSlot, invalidResultItem);
 
-        for (var slot : completedItem.getSlots()) {
-            inventory.setItem(slot, fillerItem);
-        }
-
-        for (var slot : notCompletedItem.getSlots()) {
+        for (var slot : workbench.getCompletionIndicatorSlots()) {
             inventory.setItem(slot, notCompletedItem.getItemStack());
         }
     }
@@ -552,11 +548,7 @@ public class CraftMenu implements InventoryHolder {
     private void setResult(ItemStack item) {
         inventory.setItem(resultSlot, item);
 
-        for (var slot : notCompletedItem.getSlots()) {
-            inventory.setItem(slot, fillerItem);
-        }
-
-        for (var slot : completedItem.getSlots()) {
+        for (var slot : workbench.getCompletionIndicatorSlots()) {
             inventory.setItem(slot, completedItem.getItemStack());
         }
     }
