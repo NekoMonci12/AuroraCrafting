@@ -91,7 +91,8 @@ public class BlueprintParser {
                         mergeOptions.getTrim(),
                         mergeOptions.getPdc(),
                         mergeOptions.getRestoreDurability(),
-                        mergeOptions.getMergeDurability())
+                        mergeOptions.getMergeDurability(),
+                        mergeOptions.getCopyDurability())
                 );
             }
         }
@@ -172,7 +173,8 @@ public class BlueprintParser {
                         mergeOptions.getTrim(),
                         mergeOptions.getPdc(),
                         mergeOptions.getRestoreDurability(),
-                        mergeOptions.getMergeDurability())
+                        mergeOptions.getMergeDurability(),
+                        mergeOptions.getCopyDurability())
                 );
             }
         }
