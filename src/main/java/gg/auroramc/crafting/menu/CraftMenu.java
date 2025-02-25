@@ -118,6 +118,7 @@ public class CraftMenu implements InventoryHolder {
     }
 
     public void open() {
+        if (AuroraCrafting.isLoading()) return;
         player.openInventory(inventory);
     }
 
