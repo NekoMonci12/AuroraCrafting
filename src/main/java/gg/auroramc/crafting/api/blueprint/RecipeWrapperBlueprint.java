@@ -83,6 +83,9 @@ public class RecipeWrapperBlueprint extends Blueprint {
             if (clone.getType() == Material.HONEY_BOTTLE) {
                 return clone.withType(Material.GLASS_BOTTLE);
             }
+            if (clone.getType().name().endsWith("BANNER") && clone.getItemMeta() instanceof BannerMeta bannerMeta && !bannerMeta.getPatterns().isEmpty()) {
+                return clone;
+            }
             clone.setAmount(Math.max(clone.getAmount() - timesCrafted, 0));
             return clone;
         }).toArray(ItemStack[]::new);
@@ -106,7 +109,7 @@ public class RecipeWrapperBlueprint extends Blueprint {
             return PotteryRecipeMaker.create(context.getMatrix());
 
         } else if (matches("banner_duplicate")) {
-            return resultItem.clone();
+            return getBannerDuplication(context.getMatrix());
 
         } else if (matches("map_cloning")) {
             return getMapCloning(context.getMatrix());
@@ -137,6 +140,19 @@ public class RecipeWrapperBlueprint extends Blueprint {
 
     private boolean endsWith(String key) {
         return backingRecipe.getResult().getType().name().endsWith(key);
+    }
+
+    private ItemStack getBannerDuplication(ItemStack[] matrix) {
+        ItemStack banner = null;
+
+        for (var item : matrix) {
+            if (item.getType().name().endsWith("BANNER") && item.getItemMeta() instanceof BannerMeta bannerMeta && !bannerMeta.getPatterns().isEmpty()) {
+                banner = item.clone();
+                banner.setAmount(1);
+            }
+        }
+
+        return banner;
     }
 
     private ItemStack getMapCloning(ItemStack[] matrix) {
