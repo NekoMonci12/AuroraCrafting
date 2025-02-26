@@ -109,7 +109,7 @@ public class RecipeWrapperBlueprint extends Blueprint {
             return resultItem.clone();
 
         } else if (matches("map_cloning")) {
-            return resultItem.clone();
+            return getMapCloning(context.getMatrix());
 
         } else if (matches("tipped_arrow")) {
             return getTippedArrow(context.getMatrix());
@@ -137,6 +137,23 @@ public class RecipeWrapperBlueprint extends Blueprint {
 
     private boolean endsWith(String key) {
         return backingRecipe.getResult().getType().name().endsWith(key);
+    }
+
+    private ItemStack getMapCloning(ItemStack[] matrix) {
+        ItemStack map = null;
+        int extraCount = 0;
+
+        for (var item : matrix) {
+            if (item.getType() == Material.FILLED_MAP) {
+                map = item.clone();
+            } else if (item.getType() == Material.MAP) {
+                extraCount++;
+            }
+        }
+
+        map.setAmount(extraCount + 1);
+
+        return map;
     }
 
     private ItemStack getDecoratedShield(ItemStack[] matrix) {
