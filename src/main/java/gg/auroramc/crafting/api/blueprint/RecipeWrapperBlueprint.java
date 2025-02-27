@@ -295,6 +295,9 @@ public class RecipeWrapperBlueprint extends Blueprint {
             if (LEATHER_ARMOR.contains(item.getType())) {
                 armor = item.clone();
                 armor.setAmount(1);
+            } else if (item.getType().name().equals("WOLF_ARMOR")) {
+                armor = item.clone();
+                armor.setAmount(1);
             } else if (item.getType().name().endsWith("_DYE")) {
                 dyes.add(item);
             }
@@ -312,7 +315,11 @@ public class RecipeWrapperBlueprint extends Blueprint {
                 Color color = leatherArmorMeta.getColor();
                 DyeColor[] colors = dyes.stream().map(dye -> DyeColor.valueOf(dye.getType().name().replace("_DYE", ""))).toArray(DyeColor[]::new);
 
-                color = color.mixDyes(colors);
+                if (!leatherArmorMeta.isDyed()) {
+                    color = colors[0].getColor().mixDyes(Arrays.copyOfRange(colors, 1, colors.length));
+                } else {
+                    color = color.mixDyes(colors);
+                }
 
                 leatherArmorMeta.setColor(color);
                 armor.setItemMeta(leatherArmorMeta);
