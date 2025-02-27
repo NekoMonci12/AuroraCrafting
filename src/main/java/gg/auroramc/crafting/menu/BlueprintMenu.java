@@ -120,13 +120,13 @@ public class BlueprintMenu {
             };
 
 
-            String fluidKey = cauldronBlueprint.getVanillaOptions().getFluid();
+            Material fluidKey = cauldronBlueprint.getVanillaOptions().getFluid();
             for(int fluidSlot : fluidSlots) {
                 ItemConfig fluidConfig = null;
                 switch (fluidKey) {
-                    case "WATER_CAULDRON" -> fluidConfig = config.getFluidMaterials().getWater();
-                    case "LAVA_CAULDRON" -> fluidConfig = config.getFluidMaterials().getLava();
-                    case "POWDERED_SNOW_CAULDRON" -> fluidConfig = config.getFluidMaterials().getPowderSnow();
+                    case Material.WATER_CAULDRON -> fluidConfig = config.getFluidMaterials().getWater();
+                    case Material.LAVA_CAULDRON -> fluidConfig = config.getFluidMaterials().getLava();
+                    case Material.POWDER_SNOW_CAULDRON -> fluidConfig = config.getFluidMaterials().getPowderSnow();
                 }
 
                 if (fluidConfig != null) {
