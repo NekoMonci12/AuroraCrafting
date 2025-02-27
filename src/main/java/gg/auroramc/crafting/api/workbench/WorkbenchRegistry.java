@@ -61,6 +61,8 @@ public class WorkbenchRegistry {
         return workbenches.values();
     }
 
+    public Cauldron getCauldron() { return (Cauldron) vanillaWorkbenches.get(VanillaType.CAULDRON); }
+
     public Collection<VanillaWorkbench<?>> getVanillaWorkbenches() {
         return vanillaWorkbenches.values();
     }
@@ -98,6 +100,7 @@ public class WorkbenchRegistry {
                 VanillaType.SMOKER, new Smoker(),
                 VanillaType.BLAST_FURNACE, new BlastFurnace(),
                 VanillaType.CAMPFIRE, new Campfire(),
+                VanillaType.CAULDRON, new Cauldron(),
                 VanillaType.STONE_CUTTER, new StoneCutter()
         );
     }

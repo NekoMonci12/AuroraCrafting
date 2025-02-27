@@ -47,11 +47,13 @@ public class ConfigManager {
     private SmithingRecipeViewConfig smithingRecipeViewConfig;
     private SmokerRecipeViewConfig smokerRecipeViewConfig;
     private StoneCutterRecipeViewConfig stoneCutterRecipeViewConfig;
+    private CauldronRecipeViewConfig cauldronRecipeViewConfig;
 
     private List<CraftingRecipesConfig> customRecipes;
     private List<CraftingRecipesConfig> craftingTableRecipes;
 
     private List<CookingRecipesConfig.RecipeConfig> blastingRecipes;
+    private List<CauldronRecipesConfig.RecipeConfig> cauldronRecipes;
     private List<CookingRecipesConfig.RecipeConfig> smokingRecipes;
     private List<CookingRecipesConfig.RecipeConfig> furnaceRecipes;
     private List<CookingRecipesConfig.RecipeConfig> campfireRecipes;
@@ -133,6 +135,10 @@ public class ConfigManager {
         stoneCutterRecipeViewConfig = new StoneCutterRecipeViewConfig(plugin);
         stoneCutterRecipeViewConfig.load();
 
+        CauldronRecipeViewConfig.saveDefault(plugin);
+        cauldronRecipeViewConfig = new CauldronRecipeViewConfig(plugin);
+        cauldronRecipeViewConfig.load();
+
         MenuOptions.setDefaultSupplier(workbenchDefaultConfig);
 
         workbenchConfig = loadWorkBenches();
@@ -141,6 +147,10 @@ public class ConfigManager {
         craftingTableRecipes = getCraftingRecipesConfigs("blueprints/vanilla/crafting_table", true);
 
         blastingRecipes = getCookingRecipesConfigs("blueprints/vanilla/blast_furnace").stream()
+                .flatMap(recipesConfig -> recipesConfig.getRecipes().stream())
+                .collect(Collectors.toList());
+
+        cauldronRecipes = getCauldronRecipesConfigs("blueprints/vanilla/cauldron").stream()
                 .flatMap(recipesConfig -> recipesConfig.getRecipes().stream())
                 .collect(Collectors.toList());
 
@@ -299,6 +309,29 @@ public class ConfigManager {
                     .map(Path::toFile)
                     .map((file) -> {
                         CookingRecipesConfig recipesConfig = new CookingRecipesConfig(file);
+                        recipesConfig.load();
+                        return recipesConfig;
+                    })
+                    .collect(Collectors.toList());
+        }
+    }
+
+    @SneakyThrows
+    private List<CauldronRecipesConfig> getCauldronRecipesConfigs(String folder) {
+        Path recipesFolder = Path.of(plugin.getDataFolder().getPath(), folder);
+
+        if (Files.notExists(recipesFolder)) {
+            Files.createDirectories(recipesFolder); // Create folder if it doesn't exist
+            plugin.saveResource(folder + "/_example.yml", false);
+        }
+
+        try (Stream<Path> paths = Files.walk(recipesFolder, 10)) {
+            return paths
+                    .filter(Files::isRegularFile)
+                    .filter(path -> path.toString().endsWith(".yml") || path.toString().endsWith(".yaml"))
+                    .map(Path::toFile)
+                    .map((file) -> {
+                        CauldronRecipesConfig recipesConfig = new CauldronRecipesConfig(file);
                         recipesConfig.load();
                         return recipesConfig;
                     })
