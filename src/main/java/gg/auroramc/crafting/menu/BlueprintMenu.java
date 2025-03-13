@@ -11,6 +11,7 @@ import gg.auroramc.crafting.api.blueprint.CauldronBlueprint;
 import gg.auroramc.crafting.api.blueprint.GrindStoneBlueprint;
 import gg.auroramc.crafting.api.workbench.custom.CustomWorkbench;
 import gg.auroramc.crafting.api.workbench.vanilla.VanillaWorkbench;
+import gg.auroramc.crafting.config.menu.vanilla.GrindStoneRecipeViewConfig;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Material;
@@ -210,7 +211,7 @@ public class BlueprintMenu {
     }
 
     private void openGrindstone() {
-        var config = plugin.getConfigManager().getCauldronRecipeViewConfig();
+        GrindStoneRecipeViewConfig config = plugin.getConfigManager().getGrindStoneRecipeViewConfig();
         var wb = plugin.getConfigManager().getWorkbenchDefaultConfig();
 
         AuroraMenu menu = new AuroraMenu(player, config.getTitle(), config.getRows() * 9, false, key);
@@ -224,17 +225,30 @@ public class BlueprintMenu {
 
         menu.addItem(ItemBuilder.item(blueprint.getResultItem()).slot(config.getSlots().getResult()).build(player));
 
-        MenuItem input = ItemBuilder.item(blueprint.getIngredientItems().getFirst()).slot(config.getSlots().getInput()).build(player);
+        MenuItem input1 = ItemBuilder.item(blueprint.getIngredientItems().getFirst()).slot(config.getSlots().getInput().getFirst()).build(player);
+        MenuItem input2 = ItemBuilder.item(blueprint.getIngredientItems().get(1)).slot(config.getSlots().getInput().get(1)).build(player);
+
         Blueprint ingredientRecipe = plugin.getBlueprintRegistry().getBlueprintFor(blueprint.getIngredients().getFirst().getItemPair().id());
+        Blueprint ingredientRecipe2 = plugin.getBlueprintRegistry().getBlueprintFor(blueprint.getIngredients().get(1).getItemPair().id());
 
         if (ingredientRecipe != null) {
-            menu.addItem(input, (e) -> {
+            menu.addItem(input1, (e) -> {
                 var m = BlueprintMenu.blueprintMenu(plugin, player, this.blueprint, this.backAction);
                 m.groupIndex = groupIndex;
                 m.open();
             });
         } else {
-            menu.addItem(input);
+            menu.addItem(input1);
+        }
+
+        if(ingredientRecipe2 != null) {
+            menu.addItem(input2, (e) -> {
+                var m = BlueprintMenu.blueprintMenu(plugin, player, this.blueprint, this.backAction);
+                m.groupIndex = groupIndex;
+                m.open();
+            });
+        } else {
+            menu.addItem(input2);
         }
 
 

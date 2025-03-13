@@ -1,0 +1,29 @@
+config-version: 1
+
+title: "Grindstone recipe"
+rows: 5
+
+slots:
+  input: [10, 11]
+  result: 16
+  prev-recipe: 34
+  next-recipe: 35
+
+items:
+  filler:
+    material: black_stained_glass_pane
+    name: ""
+    hide-tooltip: true
+  back:
+    material: arrow
+    name: "&fBack"
+    slot: 27
+    lore:
+      - "&7Click to go back"
+
+custom-items:
+  cauldron:
+    material: CAULDRON
+    name: ""
+    slot: 13
+    hide-tooltip: true
