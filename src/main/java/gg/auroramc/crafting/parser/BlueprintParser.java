@@ -40,7 +40,7 @@ public class BlueprintParser {
             }
         } catch (IllegalArgumentException e) {
             vanillaCategory = CraftingBookCategory.MISC;
-            AuroraCrafting.logger().warning("Invalid cooking category: " + config.getVanillaOptions().getCategory() + " in recipe: " + recipeId);
+            AuroraCrafting.logger().warning("Invalid crafting category: " + config.getVanillaOptions().getCategory() + " in recipe: " + recipeId);
         }
 
         try {
@@ -100,6 +100,7 @@ public class BlueprintParser {
 
     public Blueprint parse(CookingRecipesConfig.RecipeConfig config, CookingBlueprint.Type type) {
         CookingBookCategory vanillaCategory;
+        ChoiceType choiceType;
 
         try {
             if (config.getCategory() == null) {
@@ -112,6 +113,13 @@ public class BlueprintParser {
             AuroraCrafting.logger().warning("Invalid cooking category: " + config.getCategory() + " in recipe: " + recipeId);
         }
 
+        try {
+            choiceType = ChoiceType.valueOf(config.getChoiceType().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            choiceType = ChoiceType.EXACT;
+            AuroraCrafting.logger().warning("Invalid choice type: " + config.getChoiceType() + " in recipe: " + recipeId);
+        }
+
         return CookingBlueprint.cookingBlueprint(workbench, config.getId())
                 .type(type)
                 .input(parseItemPair(config.getInput(), Material.BARRIER))
@@ -121,6 +129,7 @@ public class BlueprintParser {
                                 .experience(config.getExperience())
                                 .group(config.getGroup())
                                 .category(vanillaCategory)
+                                .choiceType(choiceType)
                                 .build())
                 .category(category)
                 .source(config.getSourcePath())

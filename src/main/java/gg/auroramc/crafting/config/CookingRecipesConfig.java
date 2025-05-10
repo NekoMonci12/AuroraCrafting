@@ -27,6 +27,7 @@ public class CookingRecipesConfig extends AuroraConfig {
         private Float experience = 0.0F;
         private Integer cookingTime = 200;
         private String category = "MISC";
+        private String choiceType = "EXACT";
         private String group;
         private DisplayOptions displayOptions = new DisplayOptions();
 

@@ -38,6 +38,7 @@ public class Config extends AuroraConfig {
         private Boolean craftingTable = true;
         private Boolean smithingTable = true;
         private Boolean cauldron = true;
+        private Boolean cooking = true;
     }
 
     public Config(AuroraCrafting plugin) {
@@ -99,6 +100,10 @@ public class Config extends AuroraConfig {
                             "if you don't have any recipes that are using these.",
                             "Changing these, requires a server restart to take effect."
                     ));
+                },
+                (yaml) -> {
+                    yaml.set("config-version", 4);
+                    yaml.set("craft-handlers.cooking", true);
                 }
         );
     }

@@ -91,6 +91,9 @@ public class AuroraCrafting extends AuroraCraftingPlugin {
         if (configManager.getConfig().getCraftHandlers().getCauldron()) {
             Bukkit.getPluginManager().registerEvents(new CauldronListener(this), this);
         }
+        if (configManager.getConfig().getCraftHandlers().getCooking()) {
+            Bukkit.getPluginManager().registerEvents(new CookingListener(this), this);
+        }
 
         if (Version.isAtLeastVersion(21) && configManager.getConfig().getCraftHandlers().getCraftingTable()) {
             Bukkit.getPluginManager().registerEvents(new AutoCrafterListener(this), this);

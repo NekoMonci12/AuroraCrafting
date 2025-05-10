@@ -12,6 +12,7 @@ public class CookingBlueprint extends Blueprint {
     private VanillaOptions vanillaOptions = VanillaOptions.builder().build();
     private Type type = Type.FURNACE;
 
+
     @Getter
     @AllArgsConstructor
     public static final class VanillaOptions {
@@ -19,6 +20,7 @@ public class CookingBlueprint extends Blueprint {
         private String group;
         private int cookingTime;
         private float experience;
+        private ChoiceType choiceType;
 
         public static VanillaOptionsBuilder builder() {
             return new VanillaOptionsBuilder();
@@ -29,6 +31,7 @@ public class CookingBlueprint extends Blueprint {
             private String group = null;
             private int cookingTime = 200;
             private float experience = 0;
+            private ChoiceType choiceType = ChoiceType.EXACT;
 
             public VanillaOptionsBuilder category(CookingBookCategory category) {
                 if (category != null) {
@@ -58,8 +61,13 @@ public class CookingBlueprint extends Blueprint {
                 return this;
             }
 
+            public VanillaOptionsBuilder choiceType(ChoiceType choiceType) {
+                this.choiceType = choiceType;
+                return this;
+            }
+
             public VanillaOptions build() {
-                return new VanillaOptions(category, group, cookingTime, experience);
+                return new VanillaOptions(category, group, cookingTime, experience, choiceType);
             }
         }
     }
